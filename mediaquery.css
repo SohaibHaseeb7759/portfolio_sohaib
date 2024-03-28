@@ -238,6 +238,9 @@
   .form_container {
     width: 150%;
   }
+  .footer {
+    margin: 2.5rem;
+  }
 }
 
 /* screen less then 600px */
