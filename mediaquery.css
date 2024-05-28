@@ -72,7 +72,7 @@
   }
 }
 /* screen less then 1194 */
-/* @media (max-width: 74em) {
+@media (max-width: 74em) {
   .card {
     height: 10%;
     width: 30%;
@@ -94,8 +94,7 @@
     width: 15%;
   }
   /* about */
-
-/* .data_aboutme {
+  .data_aboutme {
     padding-right: 2rem;
   }
   .img_aboutme {
@@ -108,7 +107,7 @@
   .form-card1 {
     width: 70rem;
   }
-}  */
+}
 /* screen less then 879 */
 @media (max-width: 54em) {
   .container_homepage {
