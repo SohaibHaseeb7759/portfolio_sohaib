@@ -5,14 +5,16 @@ import type { Project } from "../data/site";
 interface Props {
   project: Project;
   sizes: string;
+  /** Defaults to the screenshot's own proportions, so nothing is cropped. */
   ratio?: string;
 }
 
-const { project, sizes, ratio = "16 / 10" } = Astro.props;
+const { project, sizes, ratio } = Astro.props;
 const address = (project.live ?? project.repo ?? "").replace(/^https?:\/\//, "").replace(/\/$/, "");
 const isPhone = project.device === "phone";
 if (!project.image) throw new Error(`ProjectFrame needs an image for "${project.slug}"`);
 const image = project.image;
+const frameRatio = ratio ?? `${image.width} / ${image.height}`;
 ---
 
 {isPhone ? (
@@ -33,7 +35,7 @@ const image = project.image;
     </div>
   </div>
 ) : (
-  <div class="frame" style={`--ratio:${ratio}`}>
+  <div class="frame" style={`--ratio:${frameRatio}`}>
     <div class="frame__bar" aria-hidden="true">
       <span class="frame__dots"><i></i><i></i><i></i></span>
       <span class="frame__url mono">{address}</span>
@@ -99,7 +101,7 @@ const image = project.image;
     padding-right: 42px;
   }
 
-  /* Fixed aspect ratio keeps layout stable regardless of screenshot size */
+  /* Aspect ratio is reserved up front, so the layout never shifts as images load */
   .frame__view {
     aspect-ratio: var(--ratio);
     overflow: hidden;
