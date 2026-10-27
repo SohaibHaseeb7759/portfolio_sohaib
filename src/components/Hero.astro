@@ -17,7 +17,7 @@ const current = experience.filter((r) => r.current);
     <div class="hero__copy">
       <p class="eyebrow hero__eyebrow anim" style="--i:0">
         <span class="hero__dot" aria-hidden="true"></span>
-        {profile.role} <span aria-hidden="true">—</span> {profile.location}
+        {profile.role} <span aria-hidden="true">·</span> {profile.location}
       </p>
 
       <h1 class="hero__title" id="hero-title">
@@ -26,7 +26,7 @@ const current = experience.filter((r) => r.current);
       </h1>
 
       <p class="hero__lede anim" style="--i:3">
-        I build <span class="hl">production web applications</span> across the stack — from database and CMS design to
+        I build <span class="hl">production web applications</span> across the stack, from database and CMS design to
         fast, responsive UI.
       </p>
 
@@ -85,7 +85,7 @@ const current = experience.filter((r) => r.current);
         </div>
       </div>
       <figcaption class="hero__caption mono">
-        <span>Fig. 01 — {profile.shortName}</span>
+        <span>Fig. 01 · {profile.shortName}</span>
         <span>{profile.coords}</span>
       </figcaption>
     </figure>
@@ -410,7 +410,7 @@ const current = experience.filter((r) => r.current);
     height: 14px;
   }
 
-  /* Entrance choreography — one pass on load, nothing continuous */
+  /* Entrance choreography: one pass on load, nothing continuous */
   @media (prefers-reduced-motion: no-preference) {
     .anim {
       animation: rise 900ms var(--ease-out) both;

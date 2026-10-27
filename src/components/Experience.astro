@@ -18,7 +18,7 @@ const copy = sections.experience;
         <li class:list={["role", { "role--current": r.current }]} data-reveal style={`--reveal-i:${i % 2}`}>
           <div class="role__when">
             <p class="role__dates mono">
-              <time>{r.start}</time> <span aria-hidden="true">—</span> <time>{r.end}</time>
+              <time>{r.start}</time> <span aria-hidden="true">–</span> <time>{r.end}</time>
             </p>
             <p class="role__where">{r.where}</p>
             {r.current && <p class="role__badge mono">Current</p>}

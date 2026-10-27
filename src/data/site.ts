@@ -75,7 +75,7 @@ export const experience: Role[] = [
     current: true,
     where: "Lahore · Onsite",
     points: [
-      "Built full-stack sites for Altitude Arena and Altitude Trampoline Park, two UAE entertainment venues, with an Astro + Tailwind front end and a Payload CMS backend on MongoDB — 15+ pages the client edits without code.",
+      "Built full-stack sites for Altitude Arena and Altitude Trampoline Park, two UAE entertainment venues, with an Astro + Tailwind front end and a Payload CMS backend on MongoDB, with 15+ pages the client edits without code.",
       "Wrote a typed REST client between Astro and Payload with fallback content, so the sites stay up even if the CMS is offline; stored every form submission in the CMS and built a Zoho Campaigns mailing-list integration.",
       "Connected Macralytics to WordPress for code-free content updates, and built responsive, reusable components for RocketMSL and VizCraft.",
     ],
@@ -100,7 +100,7 @@ export const experience: Role[] = [
     where: "Remote",
     points: [
       "Build and ship responsive, type-safe UI components for a SaaS platform in Next.js and TypeScript.",
-      "Integrate REST APIs and manage asynchronous data flows — including loading and error states — for dynamic content.",
+      "Integrate REST APIs and manage asynchronous data flows, including loading and error states, for dynamic content.",
       "Profile and optimise front-end performance, and agree API contracts with backend engineers to deliver features that scale.",
     ],
   },
@@ -122,7 +122,7 @@ export const capabilities = [
   {
     title: "Frontend engineering",
     summary:
-      "Type-safe, responsive interfaces in React, Next.js, Angular, and Astro — reusable components, async data with proper loading and error states, and performance work that holds up in production.",
+      "Type-safe, responsive interfaces in React, Next.js, Angular, and Astro: reusable components, async data with proper loading and error states, and performance work that holds up in production.",
   },
   {
     title: "Backend & data",
@@ -132,7 +132,7 @@ export const capabilities = [
   {
     title: "CMS & delivery",
     summary:
-      "Client sites shipped end to end as the sole developer, on Payload CMS and WordPress so content stays editable without code — integrated, deployed, and resilient when services go down.",
+      "Client sites shipped end to end as the sole developer, on Payload CMS and WordPress so content stays editable without code. Each one is integrated, deployed, and resilient when services go down.",
   },
 ];
 
@@ -189,7 +189,7 @@ export const projects: Project[] = [
     layout: "feature",
     date: "Sep 2026",
     summary:
-      "A mobile-first web app that lets small businesses selling through WhatsApp and Instagram DMs manage orders, customers, and products in one place — from a phone.",
+      "A mobile-first web app that lets small businesses selling through WhatsApp and Instagram DMs manage orders, customers, and products in one place, right from a phone.",
     problem:
       "Sellers taking orders in chat threads lose track of what's confirmed, what's shipped, and who still owes cash on delivery.",
     built: [
@@ -313,7 +313,7 @@ export const stats = [
 export const about = {
   title: "Across the stack, down to the",
   highlight: "details",
-  lead: "I'm a full stack engineer who builds production web applications with React, Next.js, Angular, Node.js, and TypeScript — from SaaS products to marketing sites I've delivered end to end as the sole developer.",
+  lead: "I'm a full stack engineer who builds production web applications with React, Next.js, Angular, Node.js, and TypeScript, from SaaS products to marketing sites I've delivered end to end as the sole developer.",
   body: `I'm comfortable owning a feature across the stack: designing the database or CMS, writing the API between them, and shipping a responsive, high-performance interface on top. I studied computer science at ${education.school}, which still shapes how I reason about data, structure, and edge cases.`,
   facts: [
     { label: "Based in", value: profile.location, note: "Working onsite and remote" },
@@ -338,19 +338,19 @@ export const sections = {
     n: "02",
     label: "Experience",
     title: "Where I've been building.",
-    intro: "Three roles across client sites and SaaS products — two of them ongoing, one onsite and one remote.",
+    intro: "Three roles across client sites and SaaS products. Two are ongoing: one onsite and one remote.",
   },
   work: {
     n: "03",
     label: "Selected work",
     title: "Projects, from a production PWA to hand-built sites.",
-    intro: "Each one is a working application — live where it's deployed, and open source wherever the code is public.",
+    intro: "Each one is a working application: live where it's deployed, and open source wherever the code is public.",
   },
   skills: {
     n: "04",
     label: "Skills",
     title: "What I bring to a product team.",
-    intro: "Three areas I own end to end — from the database and CMS to the interface people actually use.",
+    intro: "Three areas I own end to end, from the database and CMS to the interface people actually use.",
     toolkit: "Toolkit",
   },
   contact: {

@@ -1,4 +1,4 @@
-/* Design tokens — the single source for color, type, space, and motion. */
+/* Design tokens: the single source for color, type, space, and motion. */
 :root {
   color-scheme: dark;
 
@@ -80,7 +80,7 @@
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
   --nav-h: 64px;
 
-  /* Shape — radius is used sparingly and by role, not everywhere */
+  /* Shape: radius is used sparingly and by role, not everywhere */
   --r-xs: 4px;
   --r-sm: 8px;
   --r-md: 14px;
