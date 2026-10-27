@@ -1,205 +1,108 @@
 ---
 import ProjectFrame from "./ProjectFrame.astro";
 import ProjectLinks from "./ProjectLinks.astro";
-import { projects, type Project } from "../data/site";
+import { projects, sections } from "../data/site";
+
+const copy = sections.work;
 
 const pad = (n: number) => String(n).padStart(2, "0");
-
-// Group consecutive projects that share a layout, keeping the data order.
-type Item = { p: Project; n: string; flip: boolean };
-const groups: { layout: Project["layout"]; items: Item[] }[] = [];
-let features = 0;
-projects.forEach((p, i) => {
-  const item = { p, n: pad(i + 1), flip: p.layout === "feature" && features++ % 2 === 1 };
-  const last = groups.at(-1);
-  if (last && last.layout === p.layout) last.items.push(item);
-  else groups.push({ layout: p.layout, items: [item] });
-});
+const numbered = projects.map((p, i) => ({ p, n: pad(i + 1) }));
+const features = numbered.filter(({ p }) => p.layout === "feature");
+// Every other project is a card with an architecture diagram, in data order.
+const cards = numbered.filter(({ p }) => p.layout === "text");
 ---
 
 <section class="section work" id="work" aria-labelledby="work-title">
   <div class="container">
     <header class="section-head">
-      <p class="eyebrow"><b>03</b> Selected work</p>
-      <h2 id="work-title" data-reveal>Projects, from a production PWA to hand-built sites.</h2>
-      <p data-reveal>
-        Each one is a working application — live where it's deployed, and open source wherever the code is public.
-      </p>
+      <p class="eyebrow"><b>{copy.n}</b> {copy.label}</p>
+      <h2 id="work-title" data-reveal>{copy.title}</h2>
+      <p data-reveal>{copy.intro}</p>
     </header>
 
-    {groups.map((g) => (
-      <>
-        {g.layout === "feature" && (
-          <div class="featured">
-            {g.items.map(({ p, n, flip }) => (
-              <article class:list={["project feature", { "feature--flip": flip }]} aria-labelledby={`p-${p.slug}`}>
-                <div class="feature__media" data-reveal>
-                  <ProjectFrame project={p} sizes="(min-width: 1100px) 700px, (min-width: 860px) 58vw, 100vw" />
-                </div>
+    {features.map(({ p, n }) => (
+      <article class="project feature" aria-labelledby={`p-${p.slug}`}>
+        <div class="feature__media" data-reveal>
+          <ProjectFrame project={p} sizes="(min-width: 1100px) 720px, (min-width: 860px) 58vw, 100vw" />
+        </div>
 
-                <div class="feature__body" data-reveal style="--reveal-i:1">
-                  <p class="project__meta mono">
-                    <span class="project__n">{n}</span>
-                    <span>{p.kind}</span>
-                    {p.date && <span class="project__date">{p.date}</span>}
-                  </p>
-                  <h3 class="feature__title" id={`p-${p.slug}`}>{p.title}</h3>
-                  <p class="feature__summary">{p.summary}</p>
+        <div class="feature__body" data-reveal style="--reveal-i:1">
+          <p class="project__meta mono">
+            <span class="project__n">{n}</span>
+            <span>{p.kind}</span>
+            {p.date && <span class="project__date">{p.date}</span>}
+          </p>
+          <h3 class="feature__title" id={`p-${p.slug}`}>{p.title}</h3>
+          <p class="feature__summary">{p.summary}</p>
 
-                  <dl class="feature__detail">
-                    {p.problem && (
-                      <div>
-                        <dt class="mono">Problem</dt>
-                        <dd>{p.problem}</dd>
-                      </div>
-                    )}
-                    <div>
-                      <dt class="mono">What I built</dt>
-                      <dd>
-                        <ul role="list" class="built">
-                          {p.built.map((b) => <li>{b}</li>)}
-                        </ul>
-                      </dd>
-                    </div>
-                  </dl>
+          <dl class="feature__detail">
+            {p.problem && (
+              <div>
+                <dt class="mono">Problem</dt>
+                <dd>{p.problem}</dd>
+              </div>
+            )}
+            <div>
+              <dt class="mono">What I built</dt>
+              <dd>
+                <ul role="list" class="built">
+                  {p.built.map((b) => <li>{b}</li>)}
+                </ul>
+              </dd>
+            </div>
+          </dl>
 
-                  <ul class="tags" role="list" aria-label="Technologies">
-                    {p.stack.map((s) => <li>{s}</li>)}
-                  </ul>
+          <ul class="tags" role="list" aria-label="Technologies">
+            {p.stack.map((s) => <li>{s}</li>)}
+          </ul>
 
-                  <ProjectLinks project={p} />
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-
-        {g.layout === "text" && (
-          <div class="specs">
-            {g.items.map(({ p, n }, i) => (
-              <article
-                class:list={["project spec", { "spec--rose": i % 2 === 1 }]}
-                aria-labelledby={`p-${p.slug}`}
-                data-reveal
-                style={`--reveal-i:${i}`}
-              >
-                {p.flow && (
-                  <div class="spec__cover">
-                    <span class="spec__cover-label mono" aria-hidden="true">Architecture</span>
-                    <ol class="flow" role="list" aria-label={`${p.title} architecture`}>
-                      {p.flow.map((node) => <li class="flow__node mono">{node}</li>)}
-                    </ol>
-                  </div>
-                )}
-                <div class="spec__body">
-                  <p class="project__meta mono">
-                    <span class="project__n">{n}</span>
-                    <span>{p.kind}</span>
-                  </p>
-                  <h3 class="spec__title" id={`p-${p.slug}`}>{p.title}</h3>
-                  {p.date && <p class="spec__date mono">{p.date}</p>}
-                  <p class="spec__summary">{p.summary}</p>
-                  <ul role="list" class="built spec__built">
-                    {p.built.map((b) => <li>{b}</li>)}
-                  </ul>
-                  <ul class="tags" role="list" aria-label="Technologies">
-                    {p.stack.map((s) => <li>{s}</li>)}
-                  </ul>
-                  {(p.live || p.repo) && <ProjectLinks project={p} />}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-
-        {g.layout === "tile" && (
-          <div class="more">
-            {g.items.map(({ p, n }, i) => (
-              <article
-                class:list={["project tile", `tile--${p.slug}`]}
-                aria-labelledby={`p-${p.slug}`}
-                data-reveal
-                style={`--reveal-i:${i % 2}`}
-              >
-                <div class="tile__media">
-                  <ProjectFrame
-                    project={p}
-                    sizes={p.slug === "far-away" ? "(min-width: 860px) 60vw, 100vw" : "(min-width: 860px) 45vw, 100vw"}
-                  />
-                </div>
-                <div class="tile__body">
-                  <p class="project__meta mono">
-                    <span class="project__n">{n}</span>
-                    <span>{p.kind}</span>
-                  </p>
-                  <h3 class="tile__title" id={`p-${p.slug}`}>{p.title}</h3>
-                  <p class="tile__summary">{p.summary}</p>
-                  <p class="tile__built">
-                    <span class="mono">Built</span> {p.built.join(" · ")}
-                  </p>
-                  <ul class="tags" role="list" aria-label="Technologies">
-                    {p.stack.map((s) => <li>{s}</li>)}
-                  </ul>
-                  <ProjectLinks project={p} />
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </>
+          <ProjectLinks project={p} stretch />
+        </div>
+      </article>
     ))}
+
+    <div class="cards">
+      {cards.map(({ p, n }, i) => (
+        <article
+          class:list={["project card", { "is-linked": p.live || p.repo }]}
+          aria-labelledby={`p-${p.slug}`}
+          data-reveal
+          style={`--reveal-i:${i % 3}`}
+        >
+          {p.flow && (
+            <div class="card__cover">
+              <span class="card__cover-label mono" aria-hidden="true">Architecture</span>
+              <ol class="flow" role="list" aria-label={`${p.title} architecture`}>
+                {p.flow.map((node) => <li class="flow__node mono">{node}</li>)}
+              </ol>
+            </div>
+          )}
+
+          <div class="card__body">
+            <p class="project__meta mono">
+              <span class="project__n">{n}</span>
+              <span class="card__kind">{p.kind}</span>
+            </p>
+            <h3 class="card__title" id={`p-${p.slug}`}>{p.title}</h3>
+            {p.date && <p class="card__date mono">{p.date}</p>}
+            <p class="card__summary">{p.summary}</p>
+            <ul role="list" class="built card__built">
+              {p.built.map((b) => <li>{b}</li>)}
+            </ul>
+            <ul class="tags card__tags" role="list" aria-label="Technologies">
+              {p.stack.map((s) => <li>{s}</li>)}
+            </ul>
+            {(p.live || p.repo) && <ProjectLinks project={p} stretch />}
+          </div>
+        </article>
+      ))}
+    </div>
   </div>
 </section>
 
 <style>
   .work {
     border-top: 1px solid var(--c-border);
-  }
-
-  /* ---------- Featured ---------- */
-  .featured {
-    display: grid;
-    gap: clamp(var(--s-8), 9vw, 9rem);
-    margin-bottom: clamp(var(--s-8), 9vw, 9rem);
-  }
-
-  .feature {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--s-6) var(--s-5);
-    align-items: center;
-  }
-
-  .feature__media {
-    grid-column: 1 / span 7;
-    position: relative;
-  }
-
-  /* Soft colored light behind the screenshot */
-  .feature__media::before {
-    content: "";
-    position: absolute;
-    inset: 12% 8% -6%;
-    z-index: -1;
-    background: radial-gradient(closest-side, rgb(0 127 255 / 0.22), transparent);
-    filter: blur(30px);
-  }
-
-  .feature--flip .feature__media::before {
-    background: radial-gradient(closest-side, rgb(255 60 172 / 0.16), transparent);
-  }
-
-  .feature__body {
-    grid-column: 9 / -1;
-  }
-
-  .feature--flip .feature__media {
-    grid-column: 6 / -1;
-    order: 2;
-  }
-
-  .feature--flip .feature__body {
-    grid-column: 1 / span 4;
   }
 
   .project__meta {
@@ -210,12 +113,63 @@ projects.forEach((p, i) => {
   }
 
   .project__n {
-    color: var(--c-rose);
+    flex: none;
+    color: var(--c-blue);
   }
 
   .project__date::before {
     content: "·";
     margin-right: var(--s-3);
+  }
+
+  .built {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .built li {
+    position: relative;
+    padding-left: 1.1em;
+  }
+
+  .built li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.5em;
+    height: 1px;
+    background: var(--c-text-3);
+  }
+
+  /* ---------- Lead feature ---------- */
+  .feature {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-5);
+    align-items: center;
+    margin-bottom: var(--s-8);
+  }
+
+  .feature__media {
+    grid-column: 1 / span 7;
+    position: relative;
+  }
+
+  /* Soft colored light behind the stage */
+  .feature__media::before {
+    content: "";
+    position: absolute;
+    inset: 12% 8% -6%;
+    z-index: -1;
+    background: radial-gradient(closest-side, var(--c-blue-glow), transparent);
+    filter: blur(30px);
+  }
+
+  .feature__body {
+    grid-column: 8 / -1;
+    max-width: 52ch;
   }
 
   .feature__title {
@@ -251,155 +205,124 @@ projects.forEach((p, i) => {
     color: var(--c-text-2);
   }
 
-  .built {
-    display: grid;
-    gap: var(--s-1);
-  }
-
-  .built li {
-    position: relative;
-    padding-left: 1.1em;
-  }
-
-  .built li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.72em;
-    width: 0.5em;
-    height: 1px;
-    background: var(--c-text-3);
-  }
-
   .feature .tags {
     margin-bottom: var(--s-5);
   }
 
-  /* ---------- Secondary grid ---------- */
-  .more {
+  /* ---------- Card grid ---------- */
+  .cards {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--s-8) var(--s-5);
-    padding-top: var(--s-8);
-    border-top: 1px solid var(--c-border);
-    margin-bottom: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
   }
 
-  .tile {
+  .card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--s-5);
-  }
-
-  .tile--forkify {
-    grid-column: 1 / span 7;
-  }
-
-  .tile--omnifood {
-    grid-column: 8 / -1;
-    margin-top: var(--s-9);
-  }
-
-  .tile--far-away {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: var(--s-5);
-    align-items: center;
-  }
-
-  .tile--far-away .tile__media {
-    grid-column: 1 / span 8;
-  }
-
-  .tile--far-away .tile__body {
-    grid-column: 9 / -1;
-  }
-
-  .tile__title {
-    font-size: var(--t-xl);
-    letter-spacing: -0.035em;
-    margin-bottom: var(--s-3);
-  }
-
-  .tile__summary {
-    color: var(--c-text-2);
-    margin-bottom: var(--s-3);
-    max-width: 52ch;
-  }
-
-  .tile__built {
-    font-size: var(--t-sm);
-    color: var(--c-text-2);
-    margin-bottom: var(--s-4);
-    max-width: 60ch;
-  }
-
-  .tile__built .mono {
-    color: var(--c-blue);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-right: var(--s-2);
-  }
-
-  .tile .tags {
-    margin-bottom: var(--s-5);
-  }
-
-  /* ---------- Spec cards (projects without screenshots) ---------- */
-  .specs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-5);
-    margin-bottom: clamp(var(--s-8), 9vw, 9rem);
-  }
-
-  .spec {
-    --spec-glow: rgb(0 127 255 / 0.18);
-    display: flex;
-    flex-direction: column;
+    min-width: 0;
     border: 1px solid var(--c-border);
     border-radius: var(--r-md);
     background: var(--c-surface-1);
     overflow: hidden;
     transition:
       border-color var(--d-base) var(--ease-out),
-      transform var(--d-slow) var(--ease-out);
+      box-shadow var(--d-base) var(--ease-out),
+      transform var(--d-base) var(--ease-out);
   }
 
-  .spec--rose {
-    --spec-glow: rgb(255 60 172 / 0.13);
+  .card.is-linked:hover {
+    border-color: var(--c-rose-line);
+    box-shadow: var(--shadow-2);
   }
 
-  .spec:hover {
-    border-color: var(--c-border-strong);
+  @media (prefers-reduced-motion: no-preference) {
+    .card.is-linked:hover {
+      transform: translateY(-2px);
+    }
   }
 
-  .spec__cover {
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: var(--s-5);
+  }
+
+  .card__kind {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .card__title {
+    font-size: var(--t-lg);
+    letter-spacing: -0.03em;
+    margin-bottom: var(--s-2);
+  }
+
+  .card__date {
+    color: var(--c-text-3);
+    margin-bottom: var(--s-3);
+  }
+
+  .card__summary {
+    font-size: var(--t-sm);
+    color: var(--c-text);
+    margin-bottom: var(--s-4);
+  }
+
+  .card__built {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+    margin-bottom: var(--s-4);
+  }
+
+  /* Tags and link sit on the card's floor so rows line up */
+  .card__tags {
+    margin-top: auto;
+  }
+
+  .card__tags:not(:last-child) {
+    margin-bottom: var(--s-4);
+  }
+
+  /* ---------- Architecture cover ---------- */
+  .card__cover {
     position: relative;
     display: grid;
     place-items: center;
-    min-height: 200px;
-    padding: var(--s-7) var(--s-5) var(--s-6);
+    min-height: 140px;
+    padding: var(--s-6) var(--s-4) var(--s-4);
     border-bottom: 1px solid var(--c-border);
     background:
-      radial-gradient(70% 90% at 50% 0%, var(--spec-glow), transparent 70%),
-      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 32px 32px,
-      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 32px 32px,
+      radial-gradient(70% 90% at 50% 0%, var(--c-blue-glow), transparent 70%),
+      linear-gradient(to right, var(--c-grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(to bottom, var(--c-grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
       var(--c-surface-2);
   }
 
-  .spec__cover-label {
+  /* Alternate the cover light so the grid has a blue / rose rhythm */
+  .card:nth-child(even) .card__cover {
+    background:
+      radial-gradient(70% 90% at 50% 0%, var(--c-rose-glow), transparent 70%),
+      linear-gradient(to right, var(--c-grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(to bottom, var(--c-grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+      var(--c-surface-2);
+  }
+
+  .card__cover-label {
     position: absolute;
-    top: var(--s-4);
+    top: var(--s-3);
     left: var(--s-4);
     color: var(--c-text-3);
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
 
-  /* Request path drawn as connected nodes */
+  /* Request path drawn as connected nodes; wraps instead of overflowing */
   .flow {
     display: flex;
     flex-wrap: wrap;
@@ -410,19 +333,17 @@ projects.forEach((p, i) => {
 
   .flow__node {
     position: relative;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: 1px solid var(--c-border-strong);
     border-radius: var(--r-sm);
     background: var(--c-bg);
     color: var(--c-text);
-    font-size: 0.74rem;
+    font-size: 0.7rem;
     white-space: nowrap;
-    box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.9);
-    transition: border-color var(--d-base);
   }
 
   .flow__node + .flow__node {
-    margin-left: 28px;
+    margin-left: 22px;
   }
 
   /* Connector with arrowhead */
@@ -431,9 +352,9 @@ projects.forEach((p, i) => {
     position: absolute;
     right: 100%;
     top: 50%;
-    width: 28px;
+    width: 22px;
     height: 1px;
-    background: linear-gradient(to right, var(--c-border-strong), var(--c-blue));
+    background: linear-gradient(to right, var(--c-blue), var(--c-rose));
   }
 
   .flow__node + .flow__node::after {
@@ -442,119 +363,36 @@ projects.forEach((p, i) => {
     right: calc(100% + 1px);
     top: calc(50% - 3px);
     border: 3px solid transparent;
-    border-left: 4px solid var(--c-blue);
+    border-left: 4px solid var(--c-rose);
     border-right: 0;
-  }
-
-  .spec:hover .flow__node:first-child {
-    border-color: var(--c-blue);
-  }
-
-  .spec__body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: clamp(var(--s-5), 3vw, var(--s-6));
-  }
-
-  .spec__title {
-    font-size: var(--t-xl);
-    letter-spacing: -0.035em;
-    margin-bottom: var(--s-1);
-  }
-
-  .spec__date {
-    color: var(--c-text-3);
-    margin-bottom: var(--s-4);
-  }
-
-  .spec__summary {
-    color: var(--c-text);
-    margin-bottom: var(--s-4);
-  }
-
-  .spec__built {
-    font-size: var(--t-sm);
-    color: var(--c-text-2);
-    margin-bottom: var(--s-5);
-  }
-
-  .spec .tags {
-    margin-top: auto;
   }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 1099px) {
-    .feature__media,
-    .feature--flip .feature__media {
-      grid-column: 1 / span 7;
-      order: 0;
-    }
-
-    .feature__body,
-    .feature--flip .feature__body {
-      grid-column: 8 / -1;
-    }
-
-    .tile--far-away .tile__media {
-      grid-column: 1 / span 7;
-    }
-
-    .tile--far-away .tile__body {
-      grid-column: 8 / -1;
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (max-width: 859px) {
     .feature__media,
-    .feature--flip .feature__media,
-    .feature__body,
-    .feature--flip .feature__body,
-    .tile--forkify,
-    .tile--omnifood,
-    .tile--far-away .tile__media,
-    .tile--far-away .tile__body {
+    .feature__body {
       grid-column: 1 / -1;
     }
 
-    .tile--omnifood {
-      margin-top: 0;
+    .feature__body {
+      max-width: none;
     }
 
-    .specs {
+    .cards {
       grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-4);
     }
   }
 
-  @media (max-width: 520px) {
-    .flow {
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .flow__node + .flow__node {
-      margin-left: 0;
-      margin-top: 22px;
-    }
-
-    .flow__node + .flow__node::before {
-      right: auto;
-      left: 50%;
-      top: auto;
-      bottom: 100%;
-      width: 1px;
-      height: 22px;
-      background: linear-gradient(to bottom, var(--c-border-strong), var(--c-blue));
-    }
-
-    .flow__node + .flow__node::after {
-      right: auto;
-      left: calc(50% - 3px);
-      top: auto;
-      bottom: calc(100% + 1px);
-      border: 3px solid transparent;
-      border-top: 4px solid var(--c-blue);
-      border-bottom: 0;
+  @media (max-width: 599px) {
+    .card__body {
+      padding: var(--s-4);
     }
   }
 </style>

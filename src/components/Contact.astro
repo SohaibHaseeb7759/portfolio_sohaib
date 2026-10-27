@@ -1,19 +1,20 @@
 ---
 import Icon from "./Icon.astro";
-import { profile, socials } from "../data/site";
+import { profile, sections, socials } from "../data/site";
+
+const copy = sections.contact;
 ---
 
 <section class="section contact" id="contact" aria-labelledby="contact-title">
   <div class="contact__glow" aria-hidden="true"></div>
   <div class="container contact__grid">
     <div class="contact__intro">
-      <p class="eyebrow"><b>05</b> Contact</p>
+      <p class="eyebrow"><b>{copy.n}</b> {copy.label}</p>
       <h2 class="contact__title" id="contact-title" data-reveal>
-        Let's work <span>together.</span>
+        {copy.title} <span>{copy.highlight}</span>
       </h2>
       <p class="contact__text" data-reveal>
-        Thanks for visiting. If you have a question, a project opportunity, or just want to say hello, reach out
-        using any of the channels below.
+        {copy.intro}
       </p>
 
       <div class="contact__email" data-reveal>
@@ -104,7 +105,7 @@ import { profile, socials } from "../data/site";
     height: 40rem;
     left: -20rem;
     bottom: -24rem;
-    background: radial-gradient(closest-side, rgb(0 127 255 / 0.14), transparent);
+    background: radial-gradient(closest-side, var(--c-blue-soft), transparent);
   }
 
   .contact__grid {
@@ -126,7 +127,10 @@ import { profile, socials } from "../data/site";
   }
 
   .contact__title span {
-    color: var(--c-blue);
+    background: var(--g-signal);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .contact__text {
@@ -212,7 +216,7 @@ import { profile, socials } from "../data/site";
     padding: clamp(var(--s-5), 3vw, var(--s-6));
     border: 1px solid var(--c-border);
     border-radius: var(--r-md);
-    background: linear-gradient(180deg, var(--c-surface-1), rgb(17 21 28 / 0.6));
+    background: linear-gradient(180deg, var(--c-surface-1), var(--c-surface-fade));
     box-shadow: var(--shadow-1);
   }
 
@@ -291,7 +295,7 @@ import { profile, socials } from "../data/site";
 
   .field__error {
     font-size: var(--t-xs);
-    color: #ff6fbf;
+    color: var(--c-rose-text);
     min-height: 0;
   }
 
@@ -326,10 +330,13 @@ import { profile, socials } from "../data/site";
     }
   }
 
-  @media (max-width: 520px) {
+  @media (max-width: 359px) {
     .form__row {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
+
+  @media (max-width: 520px) {
 
     .form__foot .btn {
       width: 100%;

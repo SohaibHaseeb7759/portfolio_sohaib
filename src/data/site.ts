@@ -1,9 +1,6 @@
 import type { ImageMetadata } from "astro";
 import munshi from "../assets/projects/munshi.png";
-import usePopcorn from "../assets/projects/usepopcorn.jpg";
-import travelList from "../assets/projects/travel-list.jpg";
-import omnifood from "../assets/projects/omnifood.jpg";
-import forkify from "../assets/projects/forkify.jpg";
+import munshiLogin from "../assets/projects/munshi-login.png";
 
 /**
  * All portfolio content lives here. The CV in /public is the source of
@@ -24,7 +21,12 @@ export const profile = {
   github: "https://github.com/SohaibHaseeb7759",
   linkedin: "https://www.linkedin.com/in/sohaib-haseeb-9a9276282",
   focus: ["React", "Next.js", "Node.js", "TypeScript", "PostgreSQL"],
+  /** Shown under the current roles in the hero. Leave empty to hide the line. */
+  availability: "Open to full-time and contract roles · remote or Lahore",
 };
+
+/** One label for the contact call to action, everywhere it appears. */
+export const navCta = "Let's talk";
 
 export const socials = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/sohaib-haseeb-9a9276282" },
@@ -41,6 +43,15 @@ export const nav = [
   { label: "Contact", href: "#contact" },
 ];
 
+/** A client site delivered in a role. Add `image` (16:10, in src/assets/clients/) to replace the placeholder. */
+export type Client = {
+  name: string;
+  note?: string;
+  href?: string;
+  image?: ImageMetadata;
+  logo?: ImageMetadata;
+};
+
 export type Role = {
   company: string;
   title: string;
@@ -51,7 +62,7 @@ export type Role = {
   where: string;
   points: string[];
   /** Named client deliverables, shown as a list under the role. */
-  delivered?: { label: string; items: string[] };
+  delivered?: { label: string; items: Client[] };
 };
 
 export const experience: Role[] = [
@@ -70,7 +81,13 @@ export const experience: Role[] = [
     ],
     delivered: {
       label: "Delivered end to end as sole developer",
-      items: ["Altitude Arena", "Altitude Trampoline Park", "Macralytics", "RocketMSL", "VizCraft"],
+      items: [
+        { name: "Altitude Arena", note: "UAE entertainment venue · Astro + Payload CMS" },
+        { name: "Altitude Trampoline Park", note: "UAE trampoline park · Astro + Payload CMS" },
+        { name: "Macralytics", note: "Content managed through WordPress" },
+        { name: "RocketMSL", note: "Responsive, reusable UI components" },
+        { name: "VizCraft", note: "Responsive, reusable UI components" },
+      ],
     },
   },
   {
@@ -106,19 +123,16 @@ export const capabilities = [
     title: "Frontend engineering",
     summary:
       "Type-safe, responsive interfaces in React, Next.js, Angular, and Astro — reusable components, async data with proper loading and error states, and performance work that holds up in production.",
-    points: ["React & Next.js", "Angular", "Astro & Tailwind CSS", "Performance profiling"],
   },
   {
     title: "Backend & data",
     summary:
       "APIs and data models that keep things consistent: Node/Express and Django REST services, PostgreSQL with row-level security and atomic RPCs, plus MongoDB and MySQL.",
-    points: ["Node.js & Express", "Django REST Framework", "PostgreSQL & Supabase", "REST API design"],
   },
   {
     title: "CMS & delivery",
     summary:
       "Client sites shipped end to end as the sole developer, on Payload CMS and WordPress so content stays editable without code — integrated, deployed, and resilient when services go down.",
-    points: ["Payload CMS", "WordPress", "Third-party integrations", "Vercel, AWS & Azure"],
   },
 ];
 
@@ -145,8 +159,8 @@ export type Project = {
   slug: string;
   title: string;
   kind: string;
-  /** "feature" = large case study, "text" = no screenshot, "tile" = compact card. */
-  layout: "feature" | "text" | "tile";
+  /** "feature" = the lead case study with screenshots; "text" = card with an architecture diagram. */
+  layout: "feature" | "text";
   date?: string;
   summary: string;
   problem?: string;
@@ -154,13 +168,16 @@ export type Project = {
   stack: string[];
   image?: ImageMetadata;
   imageAlt?: string;
+  /** A second real screen, shown behind the first on the phone stage. */
+  secondaryImage?: ImageMetadata;
+  secondaryAlt?: string;
   live?: string;
   repo?: string;
   /** The repository exists but is not public. */
   sourcePrivate?: boolean;
   /** Screenshot shape: a desktop browser (default) or a phone. */
   device?: "browser" | "phone";
-  /** For projects without a screenshot: the request path through the stack, drawn as a diagram. */
+  /** For card projects: the path through the stack, drawn as a diagram. */
   flow?: string[];
 };
 
@@ -185,6 +202,8 @@ export const projects: Project[] = [
     image: munshi,
     imageAlt:
       "Munshi dashboard on a phone showing total revenue, a New order button, and tiles for today's orders, pending, unpaid COD and revenue",
+    secondaryImage: munshiLogin,
+    secondaryAlt: "Munshi sign-in screen with a Roman Urdu greeting and email and password fields",
     live: "https://munshi-whatsapp.vercel.app/",
     sourcePrivate: true,
     device: "phone",
@@ -219,49 +238,45 @@ export const projects: Project[] = [
     slug: "usepopcorn",
     title: "usePopcorn",
     kind: "Movie search & rating app",
-    layout: "feature",
+    layout: "text",
     summary:
       "Search any film, open its details, rate it with a custom star component, and keep a personal watched list.",
-    problem: "Keeping track of what you've watched — and what you thought of it — in one fast, focused place.",
     built: [
       "Live search against the OMDb API with loading and error states",
       "A reusable, configurable StarRating component",
       "A custom useLocalStorage hook so the watched list survives reloads",
     ],
     stack: ["React", "Hooks", "OMDb API", "localStorage"],
-    image: usePopcorn,
-    imageAlt: "usePopcorn interface showing movie search results beside a watched-movies summary",
+    flow: ["React + Hooks", "OMDb API", "localStorage"],
     repo: "https://github.com/SohaibHaseeb7759/usePopcorn-Sohaib",
   },
   {
     slug: "forkify",
     title: "Forkify",
     kind: "Recipe discovery app",
-    layout: "tile",
+    layout: "text",
     summary: "Browse and search a large recipe catalogue, open full recipes, and save favourites for later.",
     built: ["Recipe search and result browsing", "Detailed recipe views", "Saving favourite recipes"],
-    stack: ["JavaScript", "HTML", "CSS"],
-    image: forkify,
-    imageAlt: "Forkify recipe app with search results listed beside a recipe detail view",
+    stack: ["JavaScript", "HTML", "CSS", "Forkify API"],
+    flow: ["HTML + CSS", "JavaScript", "Forkify API"],
     live: "https://forkify-sohaib.netlify.app/",
   },
   {
     slug: "omnifood",
     title: "Omnifood",
     kind: "Responsive marketing site",
-    layout: "tile",
+    layout: "text",
     summary: "A responsive restaurant and meal-subscription website that presents the menu and services.",
     built: ["Fully responsive layout", "Modern UI/UX patterns for engagement", "Hand-written HTML, CSS, and JavaScript"],
     stack: ["HTML", "CSS", "JavaScript"],
-    image: omnifood,
-    imageAlt: "Omnifood landing page hero with a headline and food imagery",
+    flow: ["Semantic HTML", "Responsive CSS", "JavaScript"],
     live: "https://omnifood-sohaib.netlify.app/",
   },
   {
     slug: "far-away",
     title: "Far Away",
     kind: "Travel packing list",
-    layout: "tile",
+    layout: "text",
     summary: "A packing checklist for trips: add items with quantities, tick them off, sort, and clear the list.",
     built: [
       "Add, delete, and toggle packed items",
@@ -269,8 +284,7 @@ export const projects: Project[] = [
       "Live stats on how much is packed",
     ],
     stack: ["React", "State lifting", "CSS"],
-    image: travelList,
-    imageAlt: "Far Away packing list app with an item form and a list of items to pack",
+    flow: ["Form", "App state", "List + Stats"],
     repo: "https://github.com/SohaibHaseeb7759/Trevel-List-Sohaib",
   },
 ];
@@ -285,3 +299,65 @@ export const education = {
 };
 
 export const languages = ["English", "Urdu"];
+
+const clientSites = experience.flatMap((r) => r.delivered?.items ?? []);
+
+/** Evidence strip in About. Counts derive from the data above where possible. */
+export const stats = [
+  { value: "2+", label: "Years building production web apps" },
+  { value: String(experience.length), label: "Roles, onsite and remote" },
+  { value: String(clientSites.length), label: "Client sites shipped solo" },
+  { value: "15+", label: "CMS-editable pages delivered" },
+];
+
+export const about = {
+  title: "Across the stack, down to the",
+  highlight: "details",
+  lead: "I'm a full stack engineer who builds production web applications with React, Next.js, Angular, Node.js, and TypeScript — from SaaS products to marketing sites I've delivered end to end as the sole developer.",
+  body: `I'm comfortable owning a feature across the stack: designing the database or CMS, writing the API between them, and shipping a responsive, high-performance interface on top. I studied computer science at ${education.school}, which still shapes how I reason about data, structure, and edge cases.`,
+  facts: [
+    { label: "Based in", value: profile.location, note: "Working onsite and remote" },
+    {
+      label: "Experience",
+      value: "2+ years",
+      note: `${experience.length} roles · ${experience.map((r) => r.company).join(", ")}`,
+    },
+    {
+      label: "Education",
+      value: education.degree,
+      note: `${education.school}, ${education.campus} · ${education.start}\u2060–\u2060${education.end}`,
+    },
+    { label: "Languages", value: languages.join(" & "), note: "Full professional proficiency" },
+  ],
+};
+
+/** Section headings and intros, in page order. */
+export const sections = {
+  about: { n: "01", label: "About" },
+  experience: {
+    n: "02",
+    label: "Experience",
+    title: "Where I've been building.",
+    intro: "Three roles across client sites and SaaS products — two of them ongoing, one onsite and one remote.",
+  },
+  work: {
+    n: "03",
+    label: "Selected work",
+    title: "Projects, from a production PWA to hand-built sites.",
+    intro: "Each one is a working application — live where it's deployed, and open source wherever the code is public.",
+  },
+  skills: {
+    n: "04",
+    label: "Skills",
+    title: "What I bring to a product team.",
+    intro: "Three areas I own end to end — from the database and CMS to the interface people actually use.",
+    toolkit: "Toolkit",
+  },
+  contact: {
+    n: "05",
+    label: "Contact",
+    title: "Let's work",
+    highlight: "together.",
+    intro: "Thanks for visiting. If you have a question, a project opportunity, or just want to say hello, reach out using any of the channels below.",
+  },
+};

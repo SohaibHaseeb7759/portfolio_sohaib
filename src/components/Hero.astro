@@ -46,6 +46,13 @@ const current = experience.filter((r) => r.current);
           </li>
         ))}
       </ul>
+
+      {profile.availability && (
+        <p class="hero__open mono anim" style="--i:6">
+          <span class="hero__now-dot hero__now-dot--rose" aria-hidden="true"></span>
+          {profile.availability}
+        </p>
+      )}
     </div>
 
     <figure class="hero__figure anim anim--fig" style="--i:2">
@@ -53,8 +60,8 @@ const current = experience.filter((r) => r.current);
         <svg class="arch__svg" viewBox="0 0 400 500" aria-hidden="true">
           <defs>
             <linearGradient id="arc-grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#007FFF" />
-              <stop offset="100%" stop-color="#FF3CAC" />
+              <stop class="stop-a" offset="0%" />
+              <stop class="stop-b" offset="100%" />
             </linearGradient>
           </defs>
           <g class="arch__ticks">
@@ -71,7 +78,7 @@ const current = experience.filter((r) => r.current);
             alt={`${profile.name} sitting outdoors in a denim jacket and sunglasses, in warm afternoon light`}
             formats={["avif", "webp"]}
             widths={[320, 480, 640, portrait.width]}
-            sizes="(min-width: 1100px) 360px, (min-width: 860px) 30vw, 200px"
+            sizes="(min-width: 1100px) 360px, (min-width: 860px) 30vw, min(70vw, 300px)"
             loading="eager"
             fetchpriority="high"
           />
@@ -112,10 +119,10 @@ const current = experience.filter((r) => r.current);
     inset: 0;
     z-index: -1;
     background:
-      radial-gradient(40rem 30rem at 78% 42%, rgb(0 127 255 / 0.16), transparent 70%),
-      radial-gradient(26rem 20rem at 92% 78%, rgb(255 60 172 / 0.07), transparent 70%),
-      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 80px 80px,
-      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 80px 80px;
+      radial-gradient(40rem 30rem at 78% 42%, var(--c-blue-light), transparent 70%),
+      radial-gradient(26rem 20rem at 92% 78%, var(--c-rose-light), transparent 70%),
+      linear-gradient(to right, var(--c-grid-line) 1px, transparent 1px) 0 0 / 80px 80px,
+      linear-gradient(to bottom, var(--c-grid-line) 1px, transparent 1px) 0 0 / 80px 80px;
     -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 40%, #000 40%, transparent 100%);
     mask-image: radial-gradient(ellipse 90% 80% at 60% 40%, #000 40%, transparent 100%);
   }
@@ -166,6 +173,7 @@ const current = experience.filter((r) => r.current);
     font-style: normal;
     color: transparent;
     -webkit-text-stroke: 1.5px var(--c-text-2);
+    text-shadow: 0 0 24px var(--c-blue-soft);
   }
 
   .hero__lede {
@@ -178,9 +186,12 @@ const current = experience.filter((r) => r.current);
     margin-bottom: var(--s-6);
   }
 
+  /* Marker runs blue into rose; clone keeps the gradient whole on each wrapped line */
   .hl {
     color: var(--c-text);
-    background: linear-gradient(transparent 62%, rgb(0 127 255 / 0.28) 62%);
+    background: linear-gradient(90deg, var(--c-blue-highlight), var(--c-rose-highlight)) no-repeat 0 100% / 100% 38%;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .hero__actions {
@@ -219,6 +230,19 @@ const current = experience.filter((r) => r.current);
 
   .hero__now-at {
     color: var(--c-text-3);
+  }
+
+  .hero__now-dot--rose {
+    background: var(--c-rose);
+    box-shadow: 0 0 0 3px var(--c-rose-glow);
+  }
+
+  .hero__open {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+    color: var(--c-text-2);
   }
 
   /* Portrait in an arched frame */
@@ -271,6 +295,14 @@ const current = experience.filter((r) => r.current);
     fill: var(--c-rose);
   }
 
+  .stop-a {
+    stop-color: var(--c-blue-strong);
+  }
+
+  .stop-b {
+    stop-color: var(--c-rose);
+  }
+
   /* Inset 4.5% of the width on every side; top is 3.6% of the 5:4 height */
   .arch__photo {
     position: absolute;
@@ -279,8 +311,8 @@ const current = experience.filter((r) => r.current);
     overflow: hidden;
     background: var(--c-surface-2);
     box-shadow:
-      0 0 0 1px rgb(255 255 255 / 0.06),
-      0 40px 80px -30px rgb(0 127 255 / 0.4);
+      0 0 0 1px var(--c-edge),
+      0 40px 80px -30px var(--c-blue-shadow);
   }
 
   .arch__photo :global(picture) {
@@ -302,7 +334,7 @@ const current = experience.filter((r) => r.current);
     position: absolute;
     inset: auto 0 0;
     height: 28%;
-    background: linear-gradient(to top, rgb(9 11 15 / 0.55), transparent);
+    background: linear-gradient(to top, var(--c-scrim-soft), transparent);
     pointer-events: none;
   }
 
@@ -444,11 +476,11 @@ const current = experience.filter((r) => r.current);
   @media (max-width: 859px) {
     .hero {
       min-height: auto;
-      padding-top: calc(var(--nav-h) + var(--s-6));
+      padding-top: calc(var(--nav-h) + var(--s-4));
     }
 
     .hero__inner {
-      row-gap: var(--s-6);
+      row-gap: var(--s-4);
     }
 
     .hero__copy,
@@ -458,8 +490,9 @@ const current = experience.filter((r) => r.current);
 
     .hero__figure {
       order: -1;
-      justify-self: start;
-      max-width: 200px;
+      justify-self: center;
+      width: min(70%, 300px);
+      max-width: none;
     }
 
     .hero__caption {
@@ -477,16 +510,34 @@ const current = experience.filter((r) => r.current);
   }
 
   @media (max-width: 480px) {
-    .hero__figure {
-      max-width: 172px;
+    .hero__eyebrow {
+      margin-bottom: var(--s-4);
+    }
+
+    .hero__title {
+      margin-bottom: var(--s-4);
+    }
+
+    .hero__lede {
+      margin-bottom: var(--s-4);
+    }
+
+    .hero__actions {
+      gap: var(--s-2);
     }
 
     .hero__actions .btn {
       flex: 1 1 100%;
     }
 
+  }
+
+  /* Stroke-only type is illegible this small; fall back to solid */
+  @media (max-width: 520px) {
     .hero__title em {
-      -webkit-text-stroke-width: 1px;
+      color: var(--c-text-2);
+      -webkit-text-stroke: 0;
+      text-shadow: none;
     }
   }
 </style>

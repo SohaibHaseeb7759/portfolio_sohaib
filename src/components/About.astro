@@ -1,84 +1,45 @@
 ---
-import { education, experience, languages, profile } from "../data/site";
-
-const principles = [
-  {
-    title: "Detail is the product",
-    body: "The difference between usable and polished lives in spacing, states, and edge cases — so that is where I spend the time.",
-  },
-  {
-    title: "Users before ornament",
-    body: "Every interface starts from what someone is trying to get done. Visual flair only earns its place if it helps.",
-  },
-  {
-    title: "Push past the default",
-    body: "I like testing boundaries and trying the more creative solution, then keeping whatever makes the result genuinely better.",
-  },
-];
+import { about, sections, stats } from "../data/site";
 ---
 
 <section class="section about" id="about" aria-labelledby="about-title">
   <div class="container about__grid">
     <header class="about__aside">
-      <p class="eyebrow"><b>01</b> About</p>
+      <p class="eyebrow"><b>{sections.about.n}</b> {sections.about.label}</p>
     </header>
 
     <div class="about__main">
       <h2 class="about__title" id="about-title" data-reveal>
-        Getting to know Sohaib&nbsp;— across the stack, down to the <span>details</span>.
+        {about.title} <span>{about.highlight}</span>.
       </h2>
 
       <div class="about__body" data-reveal>
-        <p class="about__lead">
-          I'm a full stack engineer who builds production web applications with React, Next.js, Angular, Node.js, and
-          TypeScript — from SaaS products to marketing sites I've delivered end to end as the sole developer.
-        </p>
-        <p>
-          I'm comfortable owning a feature across the stack: designing the database or CMS, writing the API between them,
-          and shipping a responsive, high-performance interface on top. I studied computer science at
-          {" "}{education.school}, which still shapes how I reason about data, structure, and edge cases.
-        </p>
+        <p class="about__lead">{about.lead}</p>
+        <p>{about.body}</p>
       </div>
 
-      <ol class="principles" role="list">
-        {principles.map((p, i) => (
-          <li data-reveal style={`--reveal-i:${i}`}>
-            <span class="principles__n mono">0{i + 1}</span>
-            <h3>{p.title}</h3>
-            <p>{p.body}</p>
-          </li>
+      <dl class="stats" data-reveal>
+        {stats.map((s) => (
+          <div class="stat">
+            <dt class="stat__label mono">{s.label}</dt>
+            <dd class="stat__value">
+              {s.value.replace(/\+$/, "")}
+              {s.value.endsWith("+") && <span class="stat__plus">+</span>}
+            </dd>
+          </div>
         ))}
-      </ol>
+      </dl>
 
       <dl class="ledger" data-reveal>
-        <div>
-          <dt>Based in</dt>
-          <dd>
-            {profile.location}
-            <span>Working onsite and remote</span>
-          </dd>
-        </div>
-        <div>
-          <dt>Experience</dt>
-          <dd>
-            2+ years
-            <span>{experience.length} roles · {experience.map((r) => r.company).join(", ")}</span>
-          </dd>
-        </div>
-        <div>
-          <dt>Education</dt>
-          <dd>
-            {education.degree}
-            <span>{education.school}, {education.campus} · {education.start}–{education.end}</span>
-          </dd>
-        </div>
-        <div>
-          <dt>Languages</dt>
-          <dd>
-            {languages.join(" & ")}
-            <span>Full professional proficiency</span>
-          </dd>
-        </div>
+        {about.facts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd>
+              {f.value}
+              {f.note && <span>{f.note}</span>}
+            </dd>
+          </div>
+        ))}
       </dl>
     </div>
   </div>
@@ -103,7 +64,7 @@ const principles = [
   .about__title {
     font-size: var(--t-2xl);
     max-width: 20ch;
-    margin-bottom: var(--s-7);
+    margin-bottom: var(--s-6);
   }
 
   .about__title span {
@@ -118,7 +79,11 @@ const principles = [
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--s-6);
     color: var(--c-text-2);
-    margin-bottom: var(--s-8);
+    margin-bottom: var(--s-7);
+  }
+
+  .about__body p {
+    max-width: 70ch;
   }
 
   .about__lead {
@@ -127,48 +92,55 @@ const principles = [
     line-height: 1.55;
   }
 
-  .principles {
+  /* ---------- Stats: evidence, not adjectives ---------- */
+  .stats {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid var(--c-border);
-    margin-bottom: var(--s-8);
-  }
-
-  .principles li {
-    padding: var(--s-5) var(--s-5) var(--s-5) 0;
-  }
-
-  .principles li + li {
-    padding-left: var(--s-5);
-    border-left: 1px solid var(--c-border);
-  }
-
-  .principles__n {
-    display: block;
-    color: var(--c-rose);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-5);
     margin-bottom: var(--s-6);
   }
 
-  .principles h3 {
-    font-size: var(--t-md);
-    margin-bottom: var(--s-3);
+  /* Label is first in the DOM for screen readers ("Years… 2+"); the number leads visually */
+  .stat {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: var(--s-2);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border-strong);
   }
 
-  .principles p {
-    font-size: var(--t-sm);
-    color: var(--c-text-2);
+  .stat__value {
+    font-family: var(--f-display);
+    font-size: var(--t-xl);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--c-text);
   }
 
+  .stat__plus {
+    color: var(--c-rose);
+  }
+
+  .stat__label {
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+
+  /* ---------- Facts ---------- */
   .ledger {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 var(--s-6);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 var(--s-5);
   }
 
   .ledger div {
     display: grid;
-    grid-template-columns: 8.5rem minmax(0, 1fr);
-    gap: var(--s-4);
+    align-content: start;
+    gap: var(--s-2);
     padding-block: var(--s-4);
     border-top: 1px solid var(--c-border);
   }
@@ -179,7 +151,6 @@ const principles = [
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--c-text-3);
-    padding-top: 0.2em;
   }
 
   .ledger dd {
@@ -195,7 +166,7 @@ const principles = [
 
   @media (max-width: 1099px) {
     .ledger {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -208,30 +179,26 @@ const principles = [
       position: static;
     }
 
-    .about__body,
-    .principles {
+    .about__body {
       grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-4);
+      margin-bottom: var(--s-6);
     }
 
-    .principles li,
-    .principles li + li {
-      padding: var(--s-5) 0;
-      border-left: 0;
-    }
-
-    .principles li + li {
-      border-top: 1px solid var(--c-border);
-    }
-
-    .principles__n {
-      margin-bottom: var(--s-3);
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s-4);
     }
   }
 
   @media (max-width: 480px) {
-    .ledger div {
+    .ledger {
       grid-template-columns: minmax(0, 1fr);
-      gap: var(--s-1);
+    }
+
+    .ledger div {
+      grid-template-columns: 7.5rem minmax(0, 1fr);
+      gap: var(--s-3);
     }
   }
 </style>

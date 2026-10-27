@@ -86,8 +86,8 @@ ol[role="list"] {
 }
 
 ::selection {
-  background: var(--c-blue-strong);
-  color: #fff;
+  background: var(--c-rose);
+  color: var(--c-bg);
 }
 
 :focus-visible {
@@ -151,7 +151,7 @@ ol[role="list"] {
 }
 
 .eyebrow b {
-  color: var(--c-blue);
+  color: var(--c-rose);
   font-weight: 500;
 }
 
@@ -175,11 +175,27 @@ ol[role="list"] {
 
 .section-head > p:not(.eyebrow) {
   color: var(--c-text-2);
-  max-width: 48ch;
+  max-width: 60ch;
+}
+
+/* Quieter variant: a one-line H2 with its intro stacked underneath,
+   so tall sections keep their peaks elsewhere */
+.section-head--compact {
+  gap: var(--s-4);
+  margin-bottom: clamp(var(--s-6), 4vw, var(--s-7));
+}
+
+.section-head--compact h2 {
+  font-size: var(--t-xl);
+  max-width: none;
+}
+
+.section-head--compact > p:not(.eyebrow) {
+  margin-top: var(--s-2);
 }
 
 @media (min-width: 900px) {
-  .section-head {
+  .section-head:not(.section-head--compact) {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: end;
   }
@@ -188,7 +204,7 @@ ol[role="list"] {
     grid-column: 1 / -1;
   }
 
-  .section-head > p:not(.eyebrow) {
+  .section-head:not(.section-head--compact) > p:not(.eyebrow) {
     justify-self: end;
   }
 }
@@ -228,7 +244,7 @@ ol[role="list"] {
 }
 
 .btn:hover {
-  --btn-border: var(--c-text-3);
+  --btn-border: var(--c-rose-line);
   --btn-bg: var(--c-surface-2);
 }
 
@@ -249,14 +265,14 @@ ol[role="list"] {
 }
 
 .btn--primary {
-  --btn-bg: var(--c-blue-strong);
-  --btn-fg: #fff;
-  --btn-border: var(--c-blue-strong);
+  --btn-bg: var(--c-blue-fill);
+  --btn-fg: var(--c-text);
+  --btn-border: var(--c-blue-fill);
 }
 
 .btn--primary:hover {
-  --btn-bg: #1a8cff;
-  --btn-border: #1a8cff;
+  --btn-bg: var(--c-blue-fill-hover);
+  --btn-border: var(--c-blue-fill-hover);
 }
 
 .btn--ghost {
@@ -276,7 +292,7 @@ ol[role="list"] {
   align-items: center;
   gap: 0.4em;
   color: var(--c-text);
-  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  background: linear-gradient(var(--c-rose), var(--c-rose)) no-repeat 0 100% / 0 1px;
   transition:
     background-size var(--d-base) var(--ease-out),
     color var(--d-fast);

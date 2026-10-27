@@ -1,6 +1,6 @@
 ---
 import Icon from "./Icon.astro";
-import { nav } from "../data/site";
+import { nav, navCta } from "../data/site";
 ---
 
 <header class="nav" data-nav>
@@ -23,7 +23,7 @@ import { nav } from "../data/site";
     </nav>
 
     <a class="btn btn--sm btn--primary nav__cta" href="#contact">
-      Let's talk <Icon name="arrow-r" />
+      {navCta} <Icon name="arrow-r" />
     </a>
 
     <button
@@ -51,7 +51,7 @@ import { nav } from "../data/site";
         ))}
       </ol>
       <a class="btn btn--primary" href="#contact" data-nav-link>
-        Start a conversation <Icon name="arrow-r" />
+        {navCta} <Icon name="arrow-r" />
       </a>
     </nav>
   </div>
@@ -70,7 +70,7 @@ import { nav } from "../data/site";
 
   .nav[data-scrolled],
   .nav[data-open] {
-    background: rgb(9 11 15 / 0.82);
+    background: var(--c-scrim);
     border-bottom-color: var(--c-border);
     -webkit-backdrop-filter: saturate(140%) blur(14px);
     backdrop-filter: saturate(140%) blur(14px);
@@ -136,7 +136,7 @@ import { nav } from "../data/site";
   }
 
   .nav__links a[aria-current="true"] .nav__index {
-    color: var(--c-blue);
+    color: var(--c-rose);
   }
 
   .nav__toggle {

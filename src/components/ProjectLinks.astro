@@ -4,21 +4,35 @@ import type { Project } from "../data/site";
 
 interface Props {
   project: Project;
+  /**
+   * Stretch the primary link over its card so the whole card is clickable.
+   * The card must be `position: relative`; secondary links sit above the overlay.
+   */
+  stretch?: boolean;
 }
 
-const { project } = Astro.props;
+const { project, stretch = false } = Astro.props;
+const primary = project.live ? "live" : project.repo ? "repo" : null;
 ---
 
 <div class="project-links">
   {project.live && (
-    <a class="btn btn--primary btn--sm" href={project.live} target="_blank" rel="noopener noreferrer">
+    <a
+      class:list={["btn btn--primary btn--sm", { stretched: stretch && primary === "live" }]}
+      href={project.live}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       Visit live site <span class="visually-hidden">for {project.title} (opens in a new tab)</span>
       <Icon name="arrow-ur" />
     </a>
   )}
   {project.repo && (
     <a
-      class:list={["btn btn--sm", { "btn--primary": !project.live }]}
+      class:list={[
+        "btn btn--sm",
+        { "btn--primary": !project.live, stretched: stretch && primary === "repo", above: stretch && primary !== "repo" },
+      ]}
       href={project.repo}
       target="_blank"
       rel="noopener noreferrer"
@@ -36,6 +50,27 @@ const { project } = Astro.props;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s-3);
+  }
+
+  /* Covers the nearest positioned ancestor (the card) */
+  .stretched::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+
+  /* Draw the focus ring around the whole card the link now represents */
+  .stretched:focus-visible::after {
+    outline: 2px solid var(--c-blue);
+    outline-offset: -3px;
+    border-radius: var(--r-md);
+  }
+
+  .above {
+    position: relative;
+    z-index: 2;
   }
 
   .private {

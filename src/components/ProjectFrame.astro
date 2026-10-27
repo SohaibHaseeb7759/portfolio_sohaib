@@ -5,29 +5,44 @@ import type { Project } from "../data/site";
 interface Props {
   project: Project;
   sizes: string;
-  /** Defaults to the screenshot's own proportions, so nothing is cropped. */
-  ratio?: string;
 }
 
-const { project, sizes, ratio } = Astro.props;
+// Phone projects render on the phone stage; anything else in a browser frame
+// at the screenshot's own proportions.
+const { project, sizes } = Astro.props;
 const address = (project.live ?? project.repo ?? "").replace(/^https?:\/\//, "").replace(/\/$/, "");
 const isPhone = project.device === "phone";
 if (!project.image) throw new Error(`ProjectFrame needs an image for "${project.slug}"`);
 const image = project.image;
-const frameRatio = ratio ?? `${image.width} / ${image.height}`;
+const second = project.secondaryImage;
+const frameRatio = `${image.width} / ${image.height}`;
+const phoneWidths = (w: number) => [320, 480, 640, w].filter((x, i, a) => x <= w && a.indexOf(x) === i);
 ---
 
 {isPhone ? (
-  <div class="frame frame--stage" style="--ratio:10 / 9">
+  <div class:list={["frame frame--stage", { "has-second": second }]}>
     <span class="stage__label mono" aria-hidden="true">{address} · mobile</span>
-    <div class="frame__view stage__view">
-      <div class="phone">
+    <div class="stage__view">
+      {second && (
+        <div class="phone phone--back">
+          <Picture
+            src={second}
+            alt={project.secondaryAlt ?? ""}
+            formats={["avif", "webp"]}
+            widths={phoneWidths(second.width)}
+            sizes="(min-width: 1100px) 240px, (min-width: 860px) 20vw, 34vw"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      )}
+      <div class="phone phone--front">
         <Picture
           src={image}
           alt={project.imageAlt ?? ""}
           formats={["avif", "webp"]}
-          widths={[320, 480, 640, image.width].filter((w, i, a) => w <= image.width && a.indexOf(w) === i)}
-          sizes="(min-width: 860px) 300px, 60vw"
+          widths={phoneWidths(image.width)}
+          sizes="(min-width: 1100px) 320px, (min-width: 860px) 26vw, 46vw"
           loading="lazy"
           decoding="async"
         />
@@ -61,9 +76,7 @@ const frameRatio = ratio ?? `${image.width} / ${image.height}`;
     background: var(--c-surface-1);
     box-shadow: var(--shadow-2);
     overflow: hidden;
-    transition:
-      border-color var(--d-base) var(--ease-out),
-      transform var(--d-slow) var(--ease-out);
+    transition: border-color var(--d-base) var(--ease-out);
   }
 
   .frame__bar {
@@ -106,7 +119,7 @@ const frameRatio = ratio ?? `${image.width} / ${image.height}`;
     aspect-ratio: var(--ratio);
     overflow: hidden;
     background:
-      repeating-linear-gradient(135deg, transparent 0 10px, rgb(255 255 255 / 0.02) 10px 11px),
+      repeating-linear-gradient(135deg, transparent 0 10px, var(--c-hairline) 10px 11px),
       var(--c-surface-1);
   }
 
@@ -118,20 +131,21 @@ const frameRatio = ratio ?? `${image.width} / ${image.height}`;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top center;
+    object-position: center top;
     transition:
       transform 1.2s var(--ease-out),
       filter var(--d-slow) var(--ease-out);
     filter: saturate(0.9) brightness(0.92);
   }
 
-  :global(.project:hover) .frame {
-    border-color: var(--c-border-strong);
+  :global(.project:hover) .frame__view :global(img) {
+    filter: none;
   }
 
-  :global(.project:hover) .frame__view :global(img) {
-    transform: scale(1.03);
-    filter: none;
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.project:hover) .frame__view :global(img) {
+      transform: scale(1.02);
+    }
   }
 
   /* ---------- Phone stage: portrait screenshots on a lit backdrop ---------- */
@@ -141,16 +155,18 @@ const frameRatio = ratio ?? `${image.width} / ${image.height}`;
 
   .stage__view {
     position: relative;
+    aspect-ratio: 10 / 9;
+    overflow: hidden;
     background:
-      radial-gradient(60% 75% at 50% 30%, rgb(0 127 255 / 0.2), transparent 70%),
-      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 40px 40px,
-      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 40px 40px,
+      radial-gradient(60% 75% at 55% 30%, var(--c-blue-glow), transparent 70%),
+      linear-gradient(to right, var(--c-grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(to bottom, var(--c-grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
       var(--c-surface-1);
   }
 
   .stage__label {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     top: var(--s-4);
     left: var(--s-4);
     color: var(--c-text-3);
@@ -159,17 +175,17 @@ const frameRatio = ratio ?? `${image.width} / ${image.height}`;
 
   .phone {
     position: absolute;
-    top: 10%;
+    top: 9%;
     left: 50%;
-    width: min(42%, 300px);
+    width: min(44%, 320px);
     transform: translateX(-50%);
     padding: 7px;
     border-radius: 34px;
-    background: #1b212b;
+    background: var(--c-bezel);
     box-shadow:
       0 0 0 1px var(--c-border-strong),
-      0 40px 80px -20px rgb(0 0 0 / 0.8),
-      0 0 60px -10px rgb(0 127 255 / 0.25);
+      0 40px 80px -20px var(--c-shadow-deep),
+      0 0 60px -10px var(--c-blue-glow);
     transition: transform var(--d-slow) var(--ease-out);
   }
 
@@ -177,42 +193,60 @@ const frameRatio = ratio ?? `${image.width} / ${image.height}`;
     height: auto;
   }
 
-  .stage__view .phone :global(img) {
+  .phone :global(img) {
+    width: 100%;
     height: auto;
     border-radius: 27px;
-    object-fit: contain;
-    filter: none;
   }
 
-  :global(.project:hover) .phone {
-    transform: translateX(-50%) translateY(-8px);
+  /* Two phones: the second screen sits behind, lower and to the left */
+  .has-second .phone--front {
+    left: 60%;
   }
 
-  :global(.project:hover) .stage__view .phone :global(img) {
-    transform: none;
+  .phone--back {
+    z-index: 0;
+    top: 19%;
+    left: 31%;
+    width: min(36%, 260px);
+    filter: brightness(0.72) saturate(0.85);
+  }
+
+  .phone--front {
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.project:hover) .phone--front {
+      transform: translateX(-50%) translateY(-8px);
+    }
+
+    :global(.project:hover) .phone--back {
+      transform: translateX(-50%) translateY(-4px);
+    }
   }
 
   @media (max-width: 520px) {
     .phone {
-      width: 46%;
       padding: 5px;
-      border-radius: 26px;
+      border-radius: 24px;
     }
 
-    .stage__view .phone :global(img) {
-      border-radius: 21px;
+    .phone :global(img) {
+      border-radius: 19px;
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    :global(.project:hover) .phone {
-      transform: translateX(-50%);
+    .phone--front {
+      width: 50%;
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    :global(.project:hover) .frame__view :global(img) {
-      transform: none;
+    .phone--back {
+      width: 40%;
+      left: 28%;
+    }
+
+    .has-second .phone--front {
+      left: 62%;
     }
   }
 
