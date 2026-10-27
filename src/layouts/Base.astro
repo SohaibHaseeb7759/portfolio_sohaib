@@ -4,7 +4,7 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 import { getImage } from "astro:assets";
-import profileImg from "../assets/profile.png";
+import portrait from "../assets/portrait.jpg";
 import { profile } from "../data/site";
 
 interface Props {
@@ -14,7 +14,15 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = await getImage({ src: profileImg, width: 600, height: 600, format: "png" });
+// Square crop for link previews; sharp's "attention" strategy keeps the face in frame.
+const ogImage = await getImage({
+  src: portrait,
+  width: 600,
+  height: 600,
+  fit: "cover",
+  position: "attention",
+  format: "jpg",
+});
 const ogImageUrl = new URL(ogImage.src, Astro.site);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---

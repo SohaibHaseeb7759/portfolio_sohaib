@@ -1,11 +1,12 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import Icon from "./Icon.astro";
-import portrait from "../assets/profile.png";
+import portrait from "../assets/portrait.jpg";
 import { experience, profile } from "../data/site";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const ticks = Array.from({ length: 60 }, (_, i) => i);
+// Ruler ticks down the left edge of the arch (viewBox units).
+const ticks = Array.from({ length: 11 }, (_, i) => 216 + i * 28);
 const current = experience.filter((r) => r.current);
 ---
 
@@ -48,36 +49,29 @@ const current = experience.filter((r) => r.current);
     </div>
 
     <figure class="hero__figure anim anim--fig" style="--i:2">
-      <div class="dial">
-        <svg class="dial__svg" viewBox="0 0 400 400" aria-hidden="true">
+      <div class="arch">
+        <svg class="arch__svg" viewBox="0 0 400 500" aria-hidden="true">
           <defs>
             <linearGradient id="arc-grad" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#007FFF" />
               <stop offset="100%" stop-color="#FF3CAC" />
             </linearGradient>
           </defs>
-          <g class="dial__ticks">
-            {ticks.map((i) => (
-              <line
-                x1="200"
-                y1={i % 5 === 0 ? 6 : 10}
-                x2="200"
-                y2="18"
-                transform={`rotate(${i * 6} 200 200)`}
-                class={i % 5 === 0 ? "major" : ""}
-              />
-            ))}
+          <g class="arch__ticks">
+            {ticks.map((y, i) => <line x1={i % 5 === 0 ? -16 : -11} y1={y} x2="-4" y2={y} class={i % 5 === 0 ? "major" : ""} />)}
           </g>
-          <circle class="dial__ring" cx="200" cy="200" r="172" />
-          <circle class="dial__arc" cx="200" cy="200" r="172" pathLength="100" />
-          <circle class="dial__node" cx="200" cy="28" r="4.5" transform="rotate(118 200 200)" />
+          <!-- Outline: up the left side, over a semicircle, down the right -->
+          <path class="arch__ring" d="M1 500V200A199 199 0 0 1 399 200V500" />
+          <path class="arch__arc" d="M1 500V200A199 199 0 0 1 399 200V500" pathLength="100" />
+          <circle class="arch__node" cx="372.3" cy="100.5" r="4.5" />
         </svg>
-        <div class="dial__photo">
-          <Image
+        <div class="arch__photo">
+          <Picture
             src={portrait}
-            alt={`Portrait of ${profile.name}`}
-            widths={[280, 420, 560]}
-            sizes="(min-width: 1100px) 340px, (min-width: 860px) 28vw, 62vw"
+            alt={`${profile.name} sitting outdoors in a denim jacket and sunglasses, in warm afternoon light`}
+            formats={["avif", "webp"]}
+            widths={[320, 480, 640, portrait.width]}
+            sizes="(min-width: 1100px) 360px, (min-width: 860px) 30vw, 200px"
             loading="eager"
             fetchpriority="high"
           />
@@ -227,20 +221,20 @@ const current = experience.filter((r) => r.current);
     color: var(--c-text-3);
   }
 
-  /* Portrait dial */
+  /* Portrait in an arched frame */
   .hero__figure {
     grid-column: 9 / -1;
     justify-self: end;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
   }
 
-  .dial {
+  .arch {
     position: relative;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5;
   }
 
-  .dial__svg {
+  .arch__svg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -248,50 +242,74 @@ const current = experience.filter((r) => r.current);
     overflow: visible;
   }
 
-  .dial__ticks line {
+  .arch__ticks line {
     stroke: var(--c-border-strong);
     stroke-width: 1;
   }
 
-  .dial__ticks line.major {
+  .arch__ticks line.major {
     stroke: var(--c-text-3);
   }
 
-  .dial__ring {
+  .arch__ring {
     fill: none;
-    stroke: var(--c-border);
+    stroke: var(--c-border-strong);
     stroke-width: 1;
   }
 
-  .dial__arc {
+  /* Gradient segment over the top-right of the arch, ending at the node */
+  .arch__arc {
     fill: none;
     stroke: url(#arc-grad);
     stroke-width: 2;
     stroke-linecap: round;
-    stroke-dasharray: 33 100;
-    transform: rotate(-90deg);
-    transform-origin: 200px 200px;
+    stroke-dasharray: 17 100;
+    stroke-dashoffset: -50;
   }
 
-  .dial__node {
+  .arch__node {
     fill: var(--c-rose);
   }
 
-  .dial__photo {
+  /* Inset 4.5% of the width on every side; top is 3.6% of the 5:4 height */
+  .arch__photo {
     position: absolute;
-    inset: 12.5%;
-    border-radius: 50%;
+    inset: 3.6% 4.5% 0;
+    border-radius: 999px 999px var(--r-md) var(--r-md);
     overflow: hidden;
     background: var(--c-surface-2);
     box-shadow:
-      0 0 0 1px var(--c-border),
-      0 40px 80px -30px rgb(0 127 255 / 0.45);
+      0 0 0 1px rgb(255 255 255 / 0.06),
+      0 40px 80px -30px rgb(0 127 255 / 0.4);
   }
 
-  .dial__photo img {
+  .arch__photo :global(picture) {
+    height: 100%;
+  }
+
+  .arch__photo :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Keeps the face in the round of the arch */
+    object-position: 50% 53%;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  /* Let the base of the photo settle into the page */
+  .arch__photo::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 28%;
+    background: linear-gradient(to top, rgb(9 11 15 / 0.55), transparent);
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__figure:hover .arch__photo :global(img) {
+      transform: scale(1.025);
+    }
   }
 
   .hero__caption {
@@ -377,11 +395,11 @@ const current = experience.filter((r) => r.current);
       animation-duration: 1200ms;
     }
 
-    .dial__arc {
+    .arch__arc {
       animation: draw 1600ms var(--ease-out) 500ms both;
     }
 
-    .dial__node {
+    .arch__node {
       animation: fade 600ms ease 1700ms both;
     }
 
@@ -441,7 +459,7 @@ const current = experience.filter((r) => r.current);
     .hero__figure {
       order: -1;
       justify-self: start;
-      max-width: 220px;
+      max-width: 200px;
     }
 
     .hero__caption {
@@ -460,7 +478,7 @@ const current = experience.filter((r) => r.current);
 
   @media (max-width: 480px) {
     .hero__figure {
-      max-width: 168px;
+      max-width: 172px;
     }
 
     .hero__actions .btn {
