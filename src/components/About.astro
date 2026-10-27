@@ -1,5 +1,5 @@
 ---
-import { education, languages, profile, coursework } from "../data/site";
+import { education, experience, languages, profile } from "../data/site";
 
 const principles = [
   {
@@ -25,18 +25,18 @@ const principles = [
 
     <div class="about__main">
       <h2 class="about__title" id="about-title" data-reveal>
-        Getting to know Sohaib&nbsp;— a developer who cares how software <span>feels</span>.
+        Getting to know Sohaib&nbsp;— across the stack, down to the <span>details</span>.
       </h2>
 
       <div class="about__body" data-reveal>
         <p class="about__lead">
-          I'm deeply passionate about using code to craft solutions to complex problems. My focus is the front end: taking
-          something intricate and turning it into an application people find clear, fast, and pleasant to use.
+          I'm a full stack engineer who builds production web applications with React, Next.js, Angular, Node.js, and
+          TypeScript — from SaaS products to marketing sites I've delivered end to end as the sole developer.
         </p>
         <p>
-          I'm studying computer science at {education.school}, which grounds my web work in algorithms, object-oriented
-          design, and data structures. Most of what I build today is in React and modern JavaScript, with a growing
-          interest in the back end through Node.js and Python.
+          I'm comfortable owning a feature across the stack: designing the database or CMS, writing the API between them,
+          and shipping a responsive, high-performance interface on top. I studied computer science at
+          {" "}{education.school}, which still shapes how I reason about data, structure, and edge cases.
         </p>
       </div>
 
@@ -53,20 +53,23 @@ const principles = [
       <dl class="ledger" data-reveal>
         <div>
           <dt>Based in</dt>
-          <dd>{profile.location}</dd>
+          <dd>
+            {profile.location}
+            <span>Working onsite and remote</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Experience</dt>
+          <dd>
+            2+ years
+            <span>{experience.length} roles · {experience.map((r) => r.company).join(", ")}</span>
+          </dd>
         </div>
         <div>
           <dt>Education</dt>
           <dd>
             {education.degree}
-            <span>{education.school}, {education.campus} · since {education.since}</span>
-          </dd>
-        </div>
-        <div>
-          <dt>Coursework</dt>
-          <dd>
-            {coursework.map((c) => c.title).join(", ")}
-            <span>Built in C++ for {coursework.map((c) => c.course).join(", ")}</span>
+            <span>{education.school}, {education.campus} · {education.start}–{education.end}</span>
           </dd>
         </div>
         <div>

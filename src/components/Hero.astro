@@ -2,11 +2,11 @@
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
 import portrait from "../assets/profile.png";
-import { profile } from "../data/site";
+import { experience, profile } from "../data/site";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const ticks = Array.from({ length: 60 }, (_, i) => i);
-const focus = ["React", "JavaScript", "HTML & CSS", "UI / UX", "C++"];
+const current = experience.filter((r) => r.current);
 ---
 
 <section class="hero" id="top" aria-labelledby="hero-title">
@@ -25,8 +25,8 @@ const focus = ["React", "JavaScript", "HTML & CSS", "UI / UX", "C++"];
       </h1>
 
       <p class="hero__lede anim" style="--i:3">
-        I turn intricate problems into <span class="hl">elegant, user-friendly</span> web applications — responsive
-        interfaces in React and modern JavaScript, designed with a keen eye for detail.
+        I build <span class="hl">production web applications</span> across the stack — from database and CMS design to
+        fast, responsive UI.
       </p>
 
       <div class="hero__actions anim" style="--i:4">
@@ -35,6 +35,16 @@ const focus = ["React", "JavaScript", "HTML & CSS", "UI / UX", "C++"];
           Download CV <Icon name="arrow-d" />
         </a>
       </div>
+
+      <ul class="hero__now anim" style="--i:5" role="list" aria-label="Current roles">
+        {current.map((r) => (
+          <li>
+            <span class="hero__now-dot" aria-hidden="true"></span>
+            <span class="hero__now-title">{r.title}</span>
+            <span class="hero__now-at">at {r.company}</span>
+          </li>
+        ))}
+      </ul>
     </div>
 
     <figure class="hero__figure anim anim--fig" style="--i:2">
@@ -80,9 +90,9 @@ const focus = ["React", "JavaScript", "HTML & CSS", "UI / UX", "C++"];
     </figure>
 
     <div class="hero__foot anim" style="--i:5">
-      <p class="mono hero__foot-label">Focus</p>
+      <p class="mono hero__foot-label">Stack</p>
       <ul class="hero__focus" role="list">
-        {focus.map((f) => <li>{f}</li>)}
+        {profile.focus.map((f) => <li>{f}</li>)}
       </ul>
       <a class="hero__scroll mono" href="#about">
         Scroll <Icon name="arrow-d" />
@@ -183,6 +193,38 @@ const focus = ["React", "JavaScript", "HTML & CSS", "UI / UX", "C++"];
     display: flex;
     flex-wrap: wrap;
     gap: var(--s-3);
+  }
+
+  /* Current roles */
+  .hero__now {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-6);
+    margin-top: var(--s-6);
+    font-size: var(--t-sm);
+  }
+
+  .hero__now li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+
+  .hero__now-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-blue);
+    box-shadow: 0 0 0 3px var(--c-blue-soft);
+  }
+
+  .hero__now-title {
+    color: var(--c-text);
+    font-weight: 500;
+  }
+
+  .hero__now-at {
+    color: var(--c-text-3);
   }
 
   /* Portrait dial */

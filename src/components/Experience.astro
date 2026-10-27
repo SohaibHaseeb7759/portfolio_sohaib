@@ -1,0 +1,254 @@
+---
+import { experience } from "../data/site";
+---
+
+<section class="section xp" id="experience" aria-labelledby="xp-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow"><b>02</b> Experience</p>
+      <h2 id="xp-title" data-reveal>Where I've been building.</h2>
+      <p data-reveal>
+        Three roles across client sites and SaaS products — two of them ongoing, one onsite and one remote.
+      </p>
+    </header>
+
+    <ol class="timeline" role="list">
+      {experience.map((r, i) => (
+        <li class:list={["role", { "role--current": r.current }]} data-reveal style={`--reveal-i:${i % 2}`}>
+          <div class="role__when">
+            <p class="role__dates mono">
+              <time>{r.start}</time> <span aria-hidden="true">—</span> <time>{r.end}</time>
+            </p>
+            <p class="role__where">{r.where}</p>
+            {r.current && <p class="role__badge mono">Current</p>}
+          </div>
+
+          <div class="role__body">
+            <span class="role__node" aria-hidden="true"></span>
+            <h3 class="role__company">{r.company}</h3>
+            <p class="role__title">
+              {r.title} <span class="role__stack mono">{r.stack}</span>
+            </p>
+
+            <ul class="role__points" role="list">
+              {r.points.map((p) => <li>{p}</li>)}
+            </ul>
+
+            {r.delivered && (
+              <div class="delivered">
+                <p class="delivered__label mono">{r.delivered.label}</p>
+                <ul class="delivered__list" role="list">
+                  {r.delivered.items.map((item, n) => (
+                    <li>
+                      <span class="delivered__n mono">{String(n + 1).padStart(2, "0")}</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .xp {
+    border-top: 1px solid var(--c-border);
+  }
+
+  .timeline {
+    border-top: 1px solid var(--c-border);
+  }
+
+  .role {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--s-5);
+    padding-block: var(--s-7);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  /* ---------- Left rail: dates & place ---------- */
+  .role__when {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+  }
+
+  .role__dates {
+    color: var(--c-text-2);
+    font-size: var(--t-sm);
+  }
+
+  .role__where {
+    font-size: var(--t-sm);
+    color: var(--c-text-3);
+  }
+
+  .role__badge {
+    justify-self: start;
+    margin-top: var(--s-2);
+    padding: 3px 8px;
+    border: 1px solid rgb(0 127 255 / 0.35);
+    border-radius: var(--r-xs);
+    background: var(--c-blue-soft);
+    color: var(--c-blue);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ---------- Body ---------- */
+  .role__body {
+    position: relative;
+    padding-left: var(--s-6);
+    border-left: 1px solid var(--c-border);
+  }
+
+  .role__node {
+    position: absolute;
+    left: -5px;
+    top: 0.55em;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-bg);
+    border: 1px solid var(--c-text-3);
+    transition:
+      background-color var(--d-base),
+      border-color var(--d-base);
+  }
+
+  .role--current .role__node {
+    background: var(--c-blue);
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 4px var(--c-blue-soft);
+  }
+
+  .role:hover .role__node {
+    border-color: var(--c-blue);
+  }
+
+  .role__company {
+    font-size: var(--t-xl);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--s-2);
+  }
+
+  .role__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-3);
+    color: var(--c-text);
+    font-weight: 500;
+    margin-bottom: var(--s-5);
+  }
+
+  .role__stack {
+    color: var(--c-rose);
+  }
+
+  .role__points {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 72ch;
+    color: var(--c-text-2);
+  }
+
+  .role__points li {
+    position: relative;
+    padding-left: 1.25em;
+  }
+
+  .role__points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 0.6em;
+    height: 1px;
+    background: var(--c-blue);
+  }
+
+  /* ---------- Named deliverables ---------- */
+  .delivered {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background:
+      linear-gradient(135deg, rgb(0 127 255 / 0.07), transparent 45%),
+      var(--c-surface-1);
+  }
+
+  .delivered__label {
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--s-4);
+  }
+
+  .delivered__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
+    gap: var(--s-3) var(--s-5);
+  }
+
+  .delivered__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    font-family: var(--f-display);
+    font-size: 1.08rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .delivered__n {
+    color: var(--c-blue);
+    font-size: 0.68rem;
+  }
+
+  @media (max-width: 859px) {
+    .role {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-4);
+      padding-block: var(--s-6);
+    }
+
+    .role__when {
+      grid-auto-flow: column;
+      justify-content: start;
+      align-items: center;
+      gap: var(--s-2) var(--s-4);
+      flex-wrap: wrap;
+    }
+
+    .role__badge {
+      margin-top: 0;
+    }
+
+    .role__body {
+      padding-left: var(--s-5);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .role__when {
+      grid-auto-flow: row;
+    }
+
+    .role__badge {
+      grid-row: 1;
+    }
+
+    .delivered {
+      padding: var(--s-4);
+    }
+  }
+</style>

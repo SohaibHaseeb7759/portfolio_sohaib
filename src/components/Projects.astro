@@ -1,11 +1,20 @@
 ---
 import ProjectFrame from "./ProjectFrame.astro";
 import ProjectLinks from "./ProjectLinks.astro";
-import { projects, coursework } from "../data/site";
+import { projects, type Project } from "../data/site";
 
-const featured = projects.filter((p) => p.featured);
-const rest = projects.filter((p) => !p.featured);
 const pad = (n: number) => String(n).padStart(2, "0");
+
+// Group consecutive projects that share a layout, keeping the data order.
+type Item = { p: Project; n: string; flip: boolean };
+const groups: { layout: Project["layout"]; items: Item[] }[] = [];
+let features = 0;
+projects.forEach((p, i) => {
+  const item = { p, n: pad(i + 1), flip: p.layout === "feature" && features++ % 2 === 1 };
+  const last = groups.at(-1);
+  if (last && last.layout === p.layout) last.items.push(item);
+  else groups.push({ layout: p.layout, items: [item] });
+});
 ---
 
 <section class="section work" id="work" aria-labelledby="work-title">
@@ -18,95 +27,128 @@ const pad = (n: number) => String(n).padStart(2, "0");
       </p>
     </header>
 
-    <!-- Featured case studies -->
-    <div class="featured">
-      {featured.map((p, i) => (
-        <article class:list={["project feature", { "feature--flip": i % 2 === 1 }]} aria-labelledby={`p-${p.slug}`}>
-          <div class="feature__media" data-reveal>
-            <ProjectFrame project={p} sizes="(min-width: 1100px) 700px, (min-width: 860px) 58vw, 100vw" />
+    {groups.map((g) => (
+      <>
+        {g.layout === "feature" && (
+          <div class="featured">
+            {g.items.map(({ p, n, flip }) => (
+              <article class:list={["project feature", { "feature--flip": flip }]} aria-labelledby={`p-${p.slug}`}>
+                <div class="feature__media" data-reveal>
+                  <ProjectFrame project={p} sizes="(min-width: 1100px) 700px, (min-width: 860px) 58vw, 100vw" />
+                </div>
+
+                <div class="feature__body" data-reveal style="--reveal-i:1">
+                  <p class="project__meta mono">
+                    <span class="project__n">{n}</span>
+                    <span>{p.kind}</span>
+                    {p.date && <span class="project__date">{p.date}</span>}
+                  </p>
+                  <h3 class="feature__title" id={`p-${p.slug}`}>{p.title}</h3>
+                  <p class="feature__summary">{p.summary}</p>
+
+                  <dl class="feature__detail">
+                    {p.problem && (
+                      <div>
+                        <dt class="mono">Problem</dt>
+                        <dd>{p.problem}</dd>
+                      </div>
+                    )}
+                    <div>
+                      <dt class="mono">What I built</dt>
+                      <dd>
+                        <ul role="list" class="built">
+                          {p.built.map((b) => <li>{b}</li>)}
+                        </ul>
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <ul class="tags" role="list" aria-label="Technologies">
+                    {p.stack.map((s) => <li>{s}</li>)}
+                  </ul>
+
+                  <ProjectLinks project={p} />
+                </div>
+              </article>
+            ))}
           </div>
+        )}
 
-          <div class="feature__body" data-reveal style="--reveal-i:1">
-            <p class="project__meta mono">
-              <span class="project__n">{pad(i + 1)}</span>
-              <span>{p.kind}</span>
-            </p>
-            <h3 class="feature__title" id={`p-${p.slug}`}>{p.title}</h3>
-            <p class="feature__summary">{p.summary}</p>
-
-            <dl class="feature__detail">
-              <div>
-                <dt class="mono">Problem</dt>
-                <dd>{p.problem}</dd>
-              </div>
-              <div>
-                <dt class="mono">What I built</dt>
-                <dd>
-                  <ul role="list" class="built">
+        {g.layout === "text" && (
+          <div class="specs">
+            {g.items.map(({ p, n }, i) => (
+              <article
+                class:list={["project spec", { "spec--rose": i % 2 === 1 }]}
+                aria-labelledby={`p-${p.slug}`}
+                data-reveal
+                style={`--reveal-i:${i}`}
+              >
+                {p.flow && (
+                  <div class="spec__cover">
+                    <span class="spec__cover-label mono" aria-hidden="true">Architecture</span>
+                    <ol class="flow" role="list" aria-label={`${p.title} architecture`}>
+                      {p.flow.map((node) => <li class="flow__node mono">{node}</li>)}
+                    </ol>
+                  </div>
+                )}
+                <div class="spec__body">
+                  <p class="project__meta mono">
+                    <span class="project__n">{n}</span>
+                    <span>{p.kind}</span>
+                  </p>
+                  <h3 class="spec__title" id={`p-${p.slug}`}>{p.title}</h3>
+                  {p.date && <p class="spec__date mono">{p.date}</p>}
+                  <p class="spec__summary">{p.summary}</p>
+                  <ul role="list" class="built spec__built">
                     {p.built.map((b) => <li>{b}</li>)}
                   </ul>
-                </dd>
-              </div>
-            </dl>
-
-            <ul class="tags" role="list" aria-label="Technologies">
-              {p.stack.map((s) => <li>{s}</li>)}
-            </ul>
-
-            <ProjectLinks project={p} />
+                  <ul class="tags" role="list" aria-label="Technologies">
+                    {p.stack.map((s) => <li>{s}</li>)}
+                  </ul>
+                  {(p.live || p.repo) && <ProjectLinks project={p} />}
+                </div>
+              </article>
+            ))}
           </div>
-        </article>
-      ))}
-    </div>
+        )}
 
-    <!-- Secondary projects in an asymmetric grid -->
-    <div class="more">
-      {rest.map((p, i) => (
-        <article
-          class:list={["project tile", `tile--${p.slug}`]}
-          aria-labelledby={`p-${p.slug}`}
-          data-reveal
-          style={`--reveal-i:${i % 2}`}
-        >
-          <div class="tile__media">
-            <ProjectFrame
-              project={p}
-              ratio={p.slug === "far-away" ? "1459 / 517" : "16 / 10"}
-              sizes={p.slug === "far-away" ? "(min-width: 860px) 60vw, 100vw" : "(min-width: 860px) 45vw, 100vw"}
-            />
+        {g.layout === "tile" && (
+          <div class="more">
+            {g.items.map(({ p, n }, i) => (
+              <article
+                class:list={["project tile", `tile--${p.slug}`]}
+                aria-labelledby={`p-${p.slug}`}
+                data-reveal
+                style={`--reveal-i:${i % 2}`}
+              >
+                <div class="tile__media">
+                  <ProjectFrame
+                    project={p}
+                    ratio={p.slug === "far-away" ? "1459 / 517" : "16 / 10"}
+                    sizes={p.slug === "far-away" ? "(min-width: 860px) 60vw, 100vw" : "(min-width: 860px) 45vw, 100vw"}
+                  />
+                </div>
+                <div class="tile__body">
+                  <p class="project__meta mono">
+                    <span class="project__n">{n}</span>
+                    <span>{p.kind}</span>
+                  </p>
+                  <h3 class="tile__title" id={`p-${p.slug}`}>{p.title}</h3>
+                  <p class="tile__summary">{p.summary}</p>
+                  <p class="tile__built">
+                    <span class="mono">Built</span> {p.built.join(" · ")}
+                  </p>
+                  <ul class="tags" role="list" aria-label="Technologies">
+                    {p.stack.map((s) => <li>{s}</li>)}
+                  </ul>
+                  <ProjectLinks project={p} />
+                </div>
+              </article>
+            ))}
           </div>
-          <div class="tile__body">
-            <p class="project__meta mono">
-              <span class="project__n">{pad(featured.length + i + 1)}</span>
-              <span>{p.kind}</span>
-            </p>
-            <h3 class="tile__title" id={`p-${p.slug}`}>{p.title}</h3>
-            <p class="tile__summary">{p.summary}</p>
-            <p class="tile__built">
-              <span class="mono">Built</span> {p.built.join(" · ")}
-            </p>
-            <ul class="tags" role="list" aria-label="Technologies">
-              {p.stack.map((s) => <li>{s}</li>)}
-            </ul>
-            <ProjectLinks project={p} />
-          </div>
-        </article>
-      ))}
-    </div>
-
-    <!-- Coursework -->
-    <div class="coursework" data-reveal>
-      <h3 class="coursework__title mono">Also built — university coursework</h3>
-      <ul role="list">
-        {coursework.map((c) => (
-          <li>
-            <span class="coursework__name">{c.title}</span>
-            <span class="coursework__course">{c.course}</span>
-            <span class="coursework__lang mono">{c.lang}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+        )}
+      </>
+    ))}
   </div>
 </section>
 
@@ -170,6 +212,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
   .project__n {
     color: var(--c-rose);
+  }
+
+  .project__date::before {
+    content: "·";
+    margin-right: var(--s-3);
   }
 
   .feature__title {
@@ -236,7 +283,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     gap: var(--s-8) var(--s-5);
     padding-top: var(--s-8);
     border-top: 1px solid var(--c-border);
-    margin-bottom: var(--s-9);
+    margin-bottom: 0;
   }
 
   .tile {
@@ -300,46 +347,141 @@ const pad = (n: number) => String(n).padStart(2, "0");
     margin-bottom: var(--s-5);
   }
 
-  /* ---------- Coursework ---------- */
-  .coursework {
+  /* ---------- Spec cards (projects without screenshots) ---------- */
+  .specs {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--s-5);
+    margin-bottom: clamp(var(--s-8), 9vw, 9rem);
   }
 
-  .coursework__title {
+  .spec {
+    --spec-glow: rgb(0 127 255 / 0.18);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface-1);
+    overflow: hidden;
+    transition:
+      border-color var(--d-base) var(--ease-out),
+      transform var(--d-slow) var(--ease-out);
+  }
+
+  .spec--rose {
+    --spec-glow: rgb(255 60 172 / 0.13);
+  }
+
+  .spec:hover {
+    border-color: var(--c-border-strong);
+  }
+
+  .spec__cover {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+    padding: var(--s-7) var(--s-5) var(--s-6);
+    border-bottom: 1px solid var(--c-border);
+    background:
+      radial-gradient(70% 90% at 50% 0%, var(--spec-glow), transparent 70%),
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 32px 32px,
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 32px 32px,
+      var(--c-surface-2);
+  }
+
+  .spec__cover-label {
+    position: absolute;
+    top: var(--s-4);
+    left: var(--s-4);
     color: var(--c-text-3);
+    font-size: 0.68rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    font-weight: 500;
   }
 
-  .coursework li {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) auto;
-    gap: var(--s-4);
-    align-items: baseline;
-    padding-block: var(--s-4);
-    border-top: 1px solid var(--c-border);
+  /* Request path drawn as connected nodes */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-3) 0;
   }
 
-  .coursework li:last-child {
-    border-bottom: 1px solid var(--c-border);
+  .flow__node {
+    position: relative;
+    padding: 8px 12px;
+    border: 1px solid var(--c-border-strong);
+    border-radius: var(--r-sm);
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-size: 0.74rem;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.9);
+    transition: border-color var(--d-base);
   }
 
-  .coursework__name {
-    font-family: var(--f-display);
-    font-size: var(--t-md);
-    font-weight: 500;
+  .flow__node + .flow__node {
+    margin-left: 28px;
   }
 
-  .coursework__course {
-    color: var(--c-text-2);
-    font-size: var(--t-sm);
+  /* Connector with arrowhead */
+  .flow__node + .flow__node::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(to right, var(--c-border-strong), var(--c-blue));
   }
 
-  .coursework__lang {
+  .flow__node + .flow__node::after {
+    content: "";
+    position: absolute;
+    right: calc(100% + 1px);
+    top: calc(50% - 3px);
+    border: 3px solid transparent;
+    border-left: 4px solid var(--c-blue);
+    border-right: 0;
+  }
+
+  .spec:hover .flow__node:first-child {
+    border-color: var(--c-blue);
+  }
+
+  .spec__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: clamp(var(--s-5), 3vw, var(--s-6));
+  }
+
+  .spec__title {
+    font-size: var(--t-xl);
+    letter-spacing: -0.035em;
+    margin-bottom: var(--s-1);
+  }
+
+  .spec__date {
     color: var(--c-text-3);
+    margin-bottom: var(--s-4);
+  }
+
+  .spec__summary {
+    color: var(--c-text);
+    margin-bottom: var(--s-4);
+  }
+
+  .spec__built {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+    margin-bottom: var(--s-5);
+  }
+
+  .spec .tags {
+    margin-top: auto;
   }
 
   /* ---------- Responsive ---------- */
@@ -380,19 +522,40 @@ const pad = (n: number) => String(n).padStart(2, "0");
       margin-top: 0;
     }
 
-    .coursework {
+    .specs {
       grid-template-columns: minmax(0, 1fr);
     }
   }
 
   @media (max-width: 520px) {
-    .coursework li {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: var(--s-1) var(--s-4);
+    .flow {
+      flex-direction: column;
+      gap: 0;
     }
 
-    .coursework__course {
-      grid-row: 2;
+    .flow__node + .flow__node {
+      margin-left: 0;
+      margin-top: 22px;
+    }
+
+    .flow__node + .flow__node::before {
+      right: auto;
+      left: 50%;
+      top: auto;
+      bottom: 100%;
+      width: 1px;
+      height: 22px;
+      background: linear-gradient(to bottom, var(--c-border-strong), var(--c-blue));
+    }
+
+    .flow__node + .flow__node::after {
+      right: auto;
+      left: calc(50% - 3px);
+      top: auto;
+      bottom: calc(100% + 1px);
+      border: 3px solid transparent;
+      border-top: 4px solid var(--c-blue);
+      border-bottom: 0;
     }
   }
 </style>

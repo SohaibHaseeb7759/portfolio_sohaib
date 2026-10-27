@@ -51,7 +51,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
       jobTitle: profile.role,
       email: `mailto:${profile.email}`,
       url: canonical.href,
-      sameAs: [profile.github],
+      sameAs: [profile.github, profile.linkedin],
       address: { "@type": "PostalAddress", addressLocality: "Lahore", addressCountry: "PK" },
     })} />
 
