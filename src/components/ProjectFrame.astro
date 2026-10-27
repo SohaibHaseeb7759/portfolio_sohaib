@@ -10,25 +10,45 @@ interface Props {
 
 const { project, sizes, ratio = "16 / 10" } = Astro.props;
 const address = (project.live ?? project.repo ?? "").replace(/^https?:\/\//, "").replace(/\/$/, "");
+const isPhone = project.device === "phone";
 ---
 
-<div class="frame" style={`--ratio:${ratio}`}>
-  <div class="frame__bar" aria-hidden="true">
-    <span class="frame__dots"><i></i><i></i><i></i></span>
-    <span class="frame__url mono">{address}</span>
+{isPhone ? (
+  <div class="frame frame--stage" style="--ratio:10 / 9">
+    <span class="stage__label mono" aria-hidden="true">{address} · mobile</span>
+    <div class="frame__view stage__view">
+      <div class="phone">
+        <Picture
+          src={project.image}
+          alt={project.imageAlt}
+          formats={["avif", "webp"]}
+          widths={[320, 480, 640, project.image.width].filter((w, i, a) => w <= project.image.width && a.indexOf(w) === i)}
+          sizes="(min-width: 860px) 300px, 60vw"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
   </div>
-  <div class="frame__view">
-    <Picture
-      src={project.image}
-      alt={project.imageAlt}
-      formats={["avif", "webp"]}
-      widths={[480, 800, 1200, 1600].filter((w) => w <= project.image.width)}
-      sizes={sizes}
-      loading="lazy"
-      decoding="async"
-    />
+) : (
+  <div class="frame" style={`--ratio:${ratio}`}>
+    <div class="frame__bar" aria-hidden="true">
+      <span class="frame__dots"><i></i><i></i><i></i></span>
+      <span class="frame__url mono">{address}</span>
+    </div>
+    <div class="frame__view">
+      <Picture
+        src={project.image}
+        alt={project.imageAlt}
+        formats={["avif", "webp"]}
+        widths={[480, 800, 1200, 1600].filter((w) => w <= project.image.width)}
+        sizes={sizes}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
   </div>
-</div>
+)}
 
 <style>
   .frame {
@@ -108,6 +128,82 @@ const address = (project.live ?? project.repo ?? "").replace(/^https?:\/\//, "")
   :global(.project:hover) .frame__view :global(img) {
     transform: scale(1.03);
     filter: none;
+  }
+
+  /* ---------- Phone stage: portrait screenshots on a lit backdrop ---------- */
+  .frame--stage {
+    position: relative;
+  }
+
+  .stage__view {
+    position: relative;
+    background:
+      radial-gradient(60% 75% at 50% 30%, rgb(0 127 255 / 0.2), transparent 70%),
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 40px 40px,
+      var(--c-surface-1);
+  }
+
+  .stage__label {
+    position: absolute;
+    z-index: 1;
+    top: var(--s-4);
+    left: var(--s-4);
+    color: var(--c-text-3);
+    font-size: 0.7rem;
+  }
+
+  .phone {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    width: min(42%, 300px);
+    transform: translateX(-50%);
+    padding: 7px;
+    border-radius: 34px;
+    background: #1b212b;
+    box-shadow:
+      0 0 0 1px var(--c-border-strong),
+      0 40px 80px -20px rgb(0 0 0 / 0.8),
+      0 0 60px -10px rgb(0 127 255 / 0.25);
+    transition: transform var(--d-slow) var(--ease-out);
+  }
+
+  .phone :global(picture) {
+    height: auto;
+  }
+
+  .stage__view .phone :global(img) {
+    height: auto;
+    border-radius: 27px;
+    object-fit: contain;
+    filter: none;
+  }
+
+  :global(.project:hover) .phone {
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  :global(.project:hover) .stage__view .phone :global(img) {
+    transform: none;
+  }
+
+  @media (max-width: 520px) {
+    .phone {
+      width: 46%;
+      padding: 5px;
+      border-radius: 26px;
+    }
+
+    .stage__view .phone :global(img) {
+      border-radius: 21px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.project:hover) .phone {
+      transform: translateX(-50%);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

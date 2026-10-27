@@ -1,5 +1,5 @@
 import type { ImageMetadata } from "astro";
-import weather from "../assets/projects/weather.jpg";
+import munshi from "../assets/projects/munshi.png";
 import usePopcorn from "../assets/projects/usepopcorn.jpg";
 import travelList from "../assets/projects/travel-list.jpg";
 import omnifood from "../assets/projects/omnifood.jpg";
@@ -58,10 +58,10 @@ export const capabilities = [
 ];
 
 export const stack = [
-  { group: "Frontend", items: ["React", "HTML5", "CSS3", "Bootstrap", "Tailwind CSS"] },
-  { group: "Backend", items: ["Node.js", "Django"] },
-  { group: "Languages", items: ["JavaScript", "Python", "C++", "C"] },
-  { group: "Tooling", items: ["Git", "GitHub", "npm", "Jira"] },
+  { group: "Frontend", items: ["React", "Next.js", "HTML5", "CSS3", "Tailwind CSS", "Bootstrap"] },
+  { group: "Backend", items: ["Supabase", "PostgreSQL", "Node.js", "Django"] },
+  { group: "Languages", items: ["TypeScript", "JavaScript", "Python", "C++", "C"] },
+  { group: "Tooling", items: ["Git", "GitHub", "Vercel", "Playwright", "npm", "Jira"] },
 ];
 
 export type Project = {
@@ -76,10 +76,36 @@ export type Project = {
   imageAlt: string;
   live?: string;
   repo?: string;
+  /** The repository exists but is not public. */
+  sourcePrivate?: boolean;
+  /** Screenshot shape: a desktop browser (default) or a phone. */
+  device?: "browser" | "phone";
   featured?: boolean;
 };
 
 export const projects: Project[] = [
+  {
+    slug: "munshi",
+    title: "Munshi",
+    kind: "WhatsApp order management PWA",
+    summary:
+      "A mobile-first web app for small Pakistani businesses that sell through WhatsApp and Instagram DMs — take an order, track it to delivery, chase what's unpaid, and message the customer, all from a phone.",
+    problem:
+      "Sellers taking orders in chat threads lose track of what's confirmed, what's shipped, and who still owes cash on delivery.",
+    built: [
+      "An order lifecycle from pending to delivered, with cancellation that restocks inventory in a single database transaction",
+      "One-tap WhatsApp messages pre-filled per order status, with templates each seller can edit",
+      "A Supabase Postgres schema with row-level security on every table, plus Excel export and printable order slips",
+      "Playwright end-to-end tests covering sign-up through the full order lifecycle",
+    ],
+    stack: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Tailwind CSS", "Vercel"],
+    image: munshi,
+    imageAlt: "Munshi dashboard on a phone showing total revenue, a New order button, and tiles for today's orders, pending, unpaid COD and revenue",
+    live: "https://munshi-whatsapp.vercel.app/",
+    sourcePrivate: true,
+    device: "phone",
+    featured: true,
+  },
   {
     slug: "usepopcorn",
     title: "usePopcorn",
@@ -96,24 +122,6 @@ export const projects: Project[] = [
     image: usePopcorn,
     imageAlt: "usePopcorn interface showing movie search results beside a watched-movies summary",
     repo: "https://github.com/SohaibHaseeb7759/usePopcorn-Sohaib",
-    featured: true,
-  },
-  {
-    slug: "weather",
-    title: "Weather App",
-    kind: "Real-time forecast dashboard",
-    summary:
-      "Type a city to get current conditions — temperature, feels-like, min/max, pressure, humidity, and wind speed.",
-    problem: "Getting a clear read on current weather for any city without digging through a cluttered forecast site.",
-    built: [
-      "OpenWeatherMap integration through a small data-formatting service",
-      "A °C / °F toggle that re-queries in the chosen units",
-      "Backgrounds that switch between warm and cold based on temperature",
-    ],
-    stack: ["React", "OpenWeatherMap API", "react-icons", "CSS"],
-    image: weather,
-    imageAlt: "Weather App showing a city's temperature with a grid of condition details",
-    repo: "https://github.com/SohaibHaseeb7759/Weather-App-Sohaib",
     featured: true,
   },
   {
