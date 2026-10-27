@@ -1,0 +1,416 @@
+---
+import Icon from "./Icon.astro";
+import { profile, socials } from "../data/site";
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="contact__glow" aria-hidden="true"></div>
+  <div class="container contact__grid">
+    <div class="contact__intro">
+      <p class="eyebrow"><b>04</b> Contact</p>
+      <h2 class="contact__title" id="contact-title" data-reveal>
+        Let's work <span>together.</span>
+      </h2>
+      <p class="contact__text" data-reveal>
+        Thanks for visiting. If you have a question, a project opportunity, or just want to say hello, reach out
+        using any of the channels below.
+      </p>
+
+      <div class="contact__email" data-reveal>
+        <a class="contact__email-link" href={`mailto:${profile.email}`}>{profile.email}</a>
+        <button class="btn btn--sm copy" type="button" data-copy={profile.email}>
+          <Icon name="copy" class="copy__icon" />
+          <Icon name="check" class="copy__done" />
+          <span data-copy-label>Copy</span>
+        </button>
+      </div>
+
+      <dl class="channels" data-reveal>
+        <div>
+          <dt class="mono">Phone</dt>
+          <dd><a class="link" href={profile.phoneHref}>{profile.phone}</a></dd>
+        </div>
+        <div>
+          <dt class="mono">Elsewhere</dt>
+          <dd>
+            <ul role="list" class="socials">
+              {socials.map((s) => (
+                <li>
+                  <a class="link" href={s.href} target="_blank" rel="noopener noreferrer me">
+                    {s.label} <Icon name="arrow-ur" />
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <form class="form" data-contact-form novalidate data-reveal style="--reveal-i:1" aria-describedby="form-note">
+      <div class="form__head">
+        <h3 class="form__title">Write a message</h3>
+        <p class="form__note" id="form-note">Opens your email app with everything filled in.</p>
+      </div>
+
+      <div class="form__row">
+        <div class="field">
+          <label for="cf-name">Name</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required aria-describedby="cf-name-err" />
+          <p class="field__error" id="cf-name-err" data-error-for="name"></p>
+        </div>
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required aria-describedby="cf-email-err" />
+          <p class="field__error" id="cf-email-err" data-error-for="email"></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="cf-subject">Subject</label>
+        <input id="cf-subject" name="subject" type="text" required aria-describedby="cf-subject-err" />
+        <p class="field__error" id="cf-subject-err" data-error-for="subject"></p>
+      </div>
+
+      <div class="field">
+        <label for="cf-message">Message</label>
+        <textarea id="cf-message" name="message" rows="5" required minlength="10" aria-describedby="cf-message-err"
+        ></textarea>
+        <p class="field__error" id="cf-message-err" data-error-for="message"></p>
+      </div>
+
+      <div class="form__foot">
+        <button class="btn btn--primary" type="submit">
+          Compose email <Icon name="arrow-r" />
+        </button>
+        <p class="form__status" role="status" aria-live="polite" data-form-status></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    border-top: 1px solid var(--c-border);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .contact__glow {
+    position: absolute;
+    z-index: -1;
+    width: 60rem;
+    height: 40rem;
+    left: -20rem;
+    bottom: -24rem;
+    background: radial-gradient(closest-side, rgb(0 127 255 / 0.14), transparent);
+  }
+
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--s-8) var(--s-7);
+    align-items: start;
+  }
+
+  .contact__intro .eyebrow {
+    margin-bottom: var(--s-5);
+  }
+
+  .contact__title {
+    font-size: clamp(2.75rem, 1.6rem + 5vw, 6rem);
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    margin-bottom: var(--s-5);
+  }
+
+  .contact__title span {
+    color: var(--c-blue);
+  }
+
+  .contact__text {
+    color: var(--c-text-2);
+    max-width: 46ch;
+    margin-bottom: var(--s-7);
+  }
+
+  .contact__email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4);
+    padding-bottom: var(--s-6);
+    margin-bottom: var(--s-6);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .contact__email-link {
+    font-family: var(--f-display);
+    font-size: clamp(1.15rem, 0.8rem + 1.6vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+    background: linear-gradient(var(--c-blue), var(--c-blue)) no-repeat 0 100% / 0 2px;
+    transition:
+      background-size var(--d-base) var(--ease-out),
+      color var(--d-fast);
+  }
+
+  .contact__email-link:hover {
+    color: var(--c-blue);
+    background-size: 100% 2px;
+  }
+
+  .copy :global(.copy__done) {
+    display: none;
+    color: var(--c-blue);
+  }
+
+  .copy[data-copied] :global(.copy__icon) {
+    display: none;
+  }
+
+  .copy[data-copied] :global(.copy__done) {
+    display: block;
+  }
+
+  .channels {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .channels div {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .channels dt {
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 0.3em;
+  }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+  }
+
+  .socials :global(svg) {
+    width: 0.9em;
+    height: 0.9em;
+    color: var(--c-text-3);
+  }
+
+  /* ---------- Form ---------- */
+  .form {
+    display: grid;
+    gap: var(--s-4);
+    padding: clamp(var(--s-5), 3vw, var(--s-6));
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: linear-gradient(180deg, var(--c-surface-1), rgb(17 21 28 / 0.6));
+    box-shadow: var(--shadow-1);
+  }
+
+  .form__head {
+    margin-bottom: var(--s-2);
+  }
+
+  .form__title {
+    font-size: var(--t-lg);
+    margin-bottom: var(--s-1);
+  }
+
+  .form__note {
+    font-size: var(--t-sm);
+    color: var(--c-text-3);
+  }
+
+  .form__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-4);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .field label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-text-2);
+  }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--c-border-strong);
+    border-radius: var(--r-sm);
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-size: 1rem;
+    transition:
+      border-color var(--d-fast),
+      box-shadow var(--d-fast);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 132px;
+  }
+
+  .field input:hover,
+  .field textarea:hover {
+    border-color: var(--c-text-3);
+  }
+
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 3px var(--c-blue-soft);
+  }
+
+  .field [aria-invalid="true"] {
+    border-color: var(--c-rose);
+  }
+
+  .field [aria-invalid="true"]:focus-visible {
+    box-shadow: 0 0 0 3px var(--c-rose-soft);
+  }
+
+  .field__error {
+    font-size: var(--t-xs);
+    color: #ff6fbf;
+    min-height: 0;
+  }
+
+  .field__error:empty {
+    display: none;
+  }
+
+  .form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4);
+    margin-top: var(--s-2);
+  }
+
+  .form__status {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+  }
+
+  .form__status[data-state="ok"] {
+    color: var(--c-blue);
+  }
+
+  @media (max-width: 1099px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form {
+      max-width: 640px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .form__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form__foot .btn {
+      width: 100%;
+    }
+
+    .channels div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-2);
+    }
+  }
+</style>
+
+<script>
+  import { profile } from "../data/site";
+
+  // Copy email to clipboard.
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>("[data-copy-label]")!;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy!);
+        btn.setAttribute("data-copied", "");
+        label.textContent = "Copied";
+      } catch {
+        label.textContent = "Press ⌘/Ctrl+C";
+        window.getSelection()?.selectAllChildren(btn.previousElementSibling!);
+      }
+      setTimeout(() => {
+        btn.removeAttribute("data-copied");
+        label.textContent = "Copy";
+      }, 2200);
+    });
+  });
+
+  // Contact form: validate, then hand off to the visitor's email client.
+  // The site is static, so there is no server-side submission.
+  const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+  if (form) {
+    const status = form.querySelector<HTMLElement>("[data-form-status]")!;
+    const fields = ["name", "email", "subject", "message"] as const;
+    const messages: Record<(typeof fields)[number], string> = {
+      name: "Please tell me your name.",
+      email: "Please enter a valid email address.",
+      subject: "Add a short subject.",
+      message: "Your message should be at least 10 characters.",
+    };
+
+    const control = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+
+    const validate = (name: (typeof fields)[number]) => {
+      const el = control(name);
+      el.value = el.value.trimStart();
+      const ok = el.checkValidity() && el.value.trim().length > 0;
+      el.setAttribute("aria-invalid", String(!ok));
+      form.querySelector(`[data-error-for="${name}"]`)!.textContent = ok ? "" : messages[name];
+      return ok;
+    };
+
+    fields.forEach((name) => {
+      const el = control(name);
+      el.addEventListener("blur", () => el.value && validate(name));
+      el.addEventListener("input", () => el.getAttribute("aria-invalid") === "true" && validate(name));
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const invalid = fields.filter((name) => !validate(name));
+      if (invalid.length) {
+        control(invalid[0]).focus();
+        status.removeAttribute("data-state");
+        status.textContent = "Please fix the highlighted fields.";
+        return;
+      }
+
+      const v = Object.fromEntries(fields.map((n) => [n, control(n).value.trim()]));
+      const body = `Name: ${v.name}\nEmail: ${v.email}\n\n${v.message}`;
+      const href = `mailto:${profile.email}?subject=${encodeURIComponent(v.subject)}&body=${encodeURIComponent(body)}`;
+
+      window.location.href = href;
+      status.dataset.state = "ok";
+      status.textContent = "Your email app should open with the message ready to send.";
+    });
+  }
+</script>

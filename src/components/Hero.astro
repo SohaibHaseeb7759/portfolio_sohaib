@@ -1,0 +1,432 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import portrait from "../assets/profile.png";
+import { profile } from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const ticks = Array.from({ length: 60 }, (_, i) => i);
+const focus = ["React", "JavaScript", "HTML & CSS", "UI / UX", "C++"];
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__grid-bg" aria-hidden="true"></div>
+
+  <div class="hero__inner container">
+    <div class="hero__copy">
+      <p class="eyebrow hero__eyebrow anim" style="--i:0">
+        <span class="hero__dot" aria-hidden="true"></span>
+        {profile.role} <span aria-hidden="true">—</span> {profile.location}
+      </p>
+
+      <h1 class="hero__title" id="hero-title">
+        <span class="line"><span class="anim" style="--i:1">Muhammad</span></span>
+        <span class="line"><span class="anim" style="--i:2">Sohaib <em>Haseeb</em></span></span>
+      </h1>
+
+      <p class="hero__lede anim" style="--i:3">
+        I turn intricate problems into <span class="hl">elegant, user-friendly</span> web applications — responsive
+        interfaces in React and modern JavaScript, designed with a keen eye for detail.
+      </p>
+
+      <div class="hero__actions anim" style="--i:4">
+        <a class="btn btn--primary" href="#work">View selected work <Icon name="arrow-d" /></a>
+        <a class="btn" href={`${base}/${profile.cv}`} download={profile.cv}>
+          Download CV <Icon name="arrow-d" />
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero__figure anim anim--fig" style="--i:2">
+      <div class="dial">
+        <svg class="dial__svg" viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <linearGradient id="arc-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#007FFF" />
+              <stop offset="100%" stop-color="#FF3CAC" />
+            </linearGradient>
+          </defs>
+          <g class="dial__ticks">
+            {ticks.map((i) => (
+              <line
+                x1="200"
+                y1={i % 5 === 0 ? 6 : 10}
+                x2="200"
+                y2="18"
+                transform={`rotate(${i * 6} 200 200)`}
+                class={i % 5 === 0 ? "major" : ""}
+              />
+            ))}
+          </g>
+          <circle class="dial__ring" cx="200" cy="200" r="172" />
+          <circle class="dial__arc" cx="200" cy="200" r="172" pathLength="100" />
+          <circle class="dial__node" cx="200" cy="28" r="4.5" transform="rotate(118 200 200)" />
+        </svg>
+        <div class="dial__photo">
+          <Image
+            src={portrait}
+            alt={`Portrait of ${profile.name}`}
+            widths={[280, 420, 560]}
+            sizes="(min-width: 1100px) 340px, (min-width: 860px) 28vw, 62vw"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      </div>
+      <figcaption class="hero__caption mono">
+        <span>Fig. 01 — {profile.shortName}</span>
+        <span>{profile.coords}</span>
+      </figcaption>
+    </figure>
+
+    <div class="hero__foot anim" style="--i:5">
+      <p class="mono hero__foot-label">Focus</p>
+      <ul class="hero__focus" role="list">
+        {focus.map((f) => <li>{f}</li>)}
+      </ul>
+      <a class="hero__scroll mono" href="#about">
+        Scroll <Icon name="arrow-d" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(100svh, 980px);
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--nav-h) + var(--s-7)) var(--s-6);
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  /* Blueprint grid + two restrained light sources */
+  .hero__grid-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 78% 42%, rgb(0 127 255 / 0.16), transparent 70%),
+      radial-gradient(26rem 20rem at 92% 78%, rgb(255 60 172 / 0.07), transparent 70%),
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 80px 80px,
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 80px 80px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 40%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 90% 80% at 60% 40%, #000 40%, transparent 100%);
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--s-5);
+    row-gap: var(--s-7);
+    align-items: center;
+  }
+
+  .hero__copy {
+    grid-column: 1 / span 8;
+  }
+
+  .hero__eyebrow {
+    margin-bottom: var(--s-5);
+  }
+
+  .hero__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--c-blue);
+    box-shadow: 0 0 0 4px var(--c-blue-soft);
+  }
+
+  .hero__title {
+    font-size: var(--t-hero);
+    font-weight: 600;
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+    margin-bottom: var(--s-6);
+  }
+
+  .hero__title .line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+
+  .hero__title .line > span {
+    display: inline-block;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--c-text-2);
+  }
+
+  .hero__lede {
+    font-family: var(--f-display);
+    font-size: var(--t-lg);
+    line-height: 1.35;
+    letter-spacing: -0.012em;
+    color: var(--c-text-2);
+    max-width: 34ch;
+    margin-bottom: var(--s-6);
+  }
+
+  .hl {
+    color: var(--c-text);
+    background: linear-gradient(transparent 62%, rgb(0 127 255 / 0.28) 62%);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  /* Portrait dial */
+  .hero__figure {
+    grid-column: 9 / -1;
+    justify-self: end;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .dial {
+    position: relative;
+    aspect-ratio: 1;
+  }
+
+  .dial__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .dial__ticks line {
+    stroke: var(--c-border-strong);
+    stroke-width: 1;
+  }
+
+  .dial__ticks line.major {
+    stroke: var(--c-text-3);
+  }
+
+  .dial__ring {
+    fill: none;
+    stroke: var(--c-border);
+    stroke-width: 1;
+  }
+
+  .dial__arc {
+    fill: none;
+    stroke: url(#arc-grad);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 33 100;
+    transform: rotate(-90deg);
+    transform-origin: 200px 200px;
+  }
+
+  .dial__node {
+    fill: var(--c-rose);
+  }
+
+  .dial__photo {
+    position: absolute;
+    inset: 12.5%;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--c-surface-2);
+    box-shadow:
+      0 0 0 1px var(--c-border),
+      0 40px 80px -30px rgb(0 127 255 / 0.45);
+  }
+
+  .dial__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__caption {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--c-border);
+    color: var(--c-text-3);
+  }
+
+  /* Foot strip */
+  .hero__foot {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .hero__foot-label {
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .hero__focus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+  }
+
+  .hero__focus li + li::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    margin-right: var(--s-5);
+    vertical-align: middle;
+    border-radius: 50%;
+    background: var(--c-border-strong);
+  }
+
+  .hero__scroll {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-2) 0;
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color var(--d-fast);
+  }
+
+  .hero__scroll:hover {
+    color: var(--c-text);
+  }
+
+  .hero__scroll :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Entrance choreography — one pass on load, nothing continuous */
+  @media (prefers-reduced-motion: no-preference) {
+    .anim {
+      animation: rise 900ms var(--ease-out) both;
+      animation-delay: calc(120ms + var(--i, 0) * 90ms);
+    }
+
+    .hero__title .anim {
+      animation-name: line-up;
+      animation-duration: 1000ms;
+    }
+
+    .anim--fig {
+      animation-name: fade;
+      animation-duration: 1200ms;
+    }
+
+    .dial__arc {
+      animation: draw 1600ms var(--ease-out) 500ms both;
+    }
+
+    .dial__node {
+      animation: fade 600ms ease 1700ms both;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+    }
+
+    @keyframes line-up {
+      from {
+        transform: translateY(105%);
+      }
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+    }
+
+    @keyframes draw {
+      from {
+        stroke-dasharray: 0 100;
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (max-width: 1099px) {
+    .hero__copy {
+      grid-column: 1 / span 7;
+    }
+
+    .hero__figure {
+      grid-column: 8 / -1;
+    }
+  }
+
+  /* Mobile: portrait leads, copy follows */
+  @media (max-width: 859px) {
+    .hero {
+      min-height: auto;
+      padding-top: calc(var(--nav-h) + var(--s-6));
+    }
+
+    .hero__inner {
+      row-gap: var(--s-6);
+    }
+
+    .hero__copy,
+    .hero__figure {
+      grid-column: 1 / -1;
+    }
+
+    .hero__figure {
+      order: -1;
+      justify-self: start;
+      max-width: 220px;
+    }
+
+    .hero__caption {
+      display: none;
+    }
+
+    .hero__foot {
+      flex-wrap: wrap;
+      gap: var(--s-3) var(--s-5);
+    }
+
+    .hero__scroll {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero__figure {
+      max-width: 168px;
+    }
+
+    .hero__actions .btn {
+      flex: 1 1 100%;
+    }
+
+    .hero__title em {
+      -webkit-text-stroke-width: 1px;
+    }
+  }
+</style>

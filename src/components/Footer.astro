@@ -1,0 +1,108 @@
+---
+import Icon from "./Icon.astro";
+import { nav, profile, socials } from "../data/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <a class="footer__mark" href="#top" aria-label="Sohaib — back to top">
+        <span>&lt;</span>Sohaib<span class="r">/</span><span>&gt;</span>
+      </a>
+
+      <nav aria-label="Footer">
+        <ul role="list" class="footer__list">
+          {nav.map((n) => <li><a class="link" href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <ul role="list" class="footer__list">
+        {socials.map((s) => (
+          <li>
+            <a class="link" href={s.href} target="_blank" rel="noopener noreferrer">
+              {s.label}<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <a class="btn btn--sm footer__top-btn" href="#top">
+        Back to top <Icon name="arrow-u" />
+      </a>
+    </div>
+
+    <div class="footer__bottom mono">
+      <p>© {year} {profile.name}</p>
+      <p>Designed & built in {profile.location} · Made with Astro</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--c-border);
+    padding-block: var(--s-7) var(--s-6);
+    background: var(--c-bg);
+  }
+
+  .footer__top {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(0, 3fr) auto;
+    gap: var(--s-6);
+    align-items: start;
+    padding-bottom: var(--s-7);
+  }
+
+  .footer__mark {
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: 1.4rem;
+    width: fit-content;
+  }
+
+  .footer__mark span {
+    color: var(--c-blue);
+  }
+
+  .footer__mark .r {
+    color: var(--c-rose);
+  }
+
+  .footer__list {
+    display: grid;
+    gap: var(--s-2);
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+  }
+
+  .footer__list a:hover {
+    color: var(--c-text);
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-5);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-border);
+    color: var(--c-text-3);
+  }
+
+  @media (max-width: 859px) {
+    .footer__top {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .footer__mark {
+      grid-column: 1 / -1;
+    }
+
+    .footer__top-btn {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

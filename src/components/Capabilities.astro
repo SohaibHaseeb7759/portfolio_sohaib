@@ -1,0 +1,201 @@
+---
+import { capabilities, stack } from "../data/site";
+---
+
+<section class="section caps" id="capabilities" aria-labelledby="caps-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow"><b>02</b> Capabilities</p>
+      <h2 id="caps-title" data-reveal>What I bring to a product team.</h2>
+      <p data-reveal>
+        Three disciplines that overlap in every project: building the interface, designing how it works, and engineering
+        the logic underneath.
+      </p>
+    </header>
+
+    <ol class="disciplines" role="list">
+      {capabilities.map((c, i) => (
+        <li class="discipline" data-reveal>
+          <span class="discipline__n mono">0{i + 1}</span>
+          <h3 class="discipline__title">{c.title}</h3>
+          <p class="discipline__summary">{c.summary}</p>
+          <ul class="tags discipline__points" role="list">
+            {c.points.map((p) => <li>{p}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ol>
+
+    <div class="stack" data-reveal>
+      <h3 class="stack__title mono">Toolkit</h3>
+      <div class="stack__grid">
+        {stack.map((s) => (
+          <div class="stack__group">
+            <h4 class="stack__group-title">{s.group}</h4>
+            <ul role="list">
+              {s.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .disciplines {
+    border-top: 1px solid var(--c-border);
+    margin-bottom: var(--s-9);
+  }
+
+  .discipline {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
+    gap: var(--s-5);
+    align-items: baseline;
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  /* Accent rule grows in from the left on hover */
+  .discipline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--g-signal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-slow) var(--ease-out);
+  }
+
+  .discipline:hover::after {
+    transform: scaleX(1);
+  }
+
+  .discipline__n {
+    color: var(--c-text-3);
+  }
+
+  .discipline__title {
+    font-size: var(--t-xl);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    transition: color var(--d-base);
+  }
+
+  .discipline:hover .discipline__title {
+    color: var(--c-blue);
+  }
+
+  .discipline__summary {
+    color: var(--c-text-2);
+    max-width: 46ch;
+  }
+
+  .discipline__points {
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+
+  .stack {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--s-5);
+  }
+
+  .stack__title {
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  .stack__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface-1);
+    overflow: hidden;
+  }
+
+  .stack__group {
+    padding: var(--s-5);
+  }
+
+  .stack__group + .stack__group {
+    border-left: 1px solid var(--c-border);
+  }
+
+  .stack__group-title {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-blue);
+    margin-bottom: var(--s-4);
+  }
+
+  .stack__group ul {
+    display: grid;
+    gap: var(--s-2);
+    font-size: var(--t-sm);
+    color: var(--c-text);
+  }
+
+  @media (max-width: 1099px) {
+    .discipline {
+      grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .discipline__points {
+      grid-column: 2 / -1;
+      flex-direction: row;
+      gap: var(--s-2) var(--s-4);
+    }
+
+    .stack {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .stack__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stack__group:nth-child(3) {
+      border-left: 0;
+    }
+
+    .stack__group:nth-child(n + 3) {
+      border-top: 1px solid var(--c-border);
+    }
+  }
+
+  @media (max-width: 859px) {
+    .discipline {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+      gap: var(--s-3) var(--s-4);
+    }
+
+    .discipline__summary,
+    .discipline__points {
+      grid-column: 2;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .stack__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .stack__group + .stack__group {
+      border-left: 0;
+      border-top: 1px solid var(--c-border);
+    }
+  }
+</style>

@@ -1,0 +1,75 @@
+/* Design tokens — the single source for color, type, space, and motion. */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --c-bg: #090b0f;
+  --c-surface-1: #11151c;
+  --c-surface-2: #171d27;
+  --c-surface-3: #1e2531;
+  --c-border: #252c38;
+  --c-border-strong: #343d4c;
+
+  /* Text */
+  --c-text: #f5f7fa;
+  --c-text-2: #a5adba;
+  --c-text-3: #7d8796; /* nudged up from #737d8c for AA on surfaces */
+
+  /* Accents */
+  --c-blue: #1a8cff; /* cerulean, lifted slightly for text contrast on black */
+  --c-blue-strong: #007fff;
+  --c-blue-soft: rgb(0 127 255 / 0.14);
+  --c-rose: #ff3cac;
+  --c-rose-soft: rgb(255 60 172 / 0.14);
+  --g-signal: linear-gradient(100deg, var(--c-blue-strong) 0%, #7b5cff 55%, var(--c-rose) 100%);
+
+  /* Typography */
+  --f-display: "Space Grotesk Variable", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --f-body: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Fluid type scale (min at 360px, max at 1440px) */
+  --t-xs: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
+  --t-sm: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
+  --t-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --t-md: clamp(1.125rem, 1.07rem + 0.25vw, 1.3rem);
+  --t-lg: clamp(1.35rem, 1.2rem + 0.65vw, 1.85rem);
+  --t-xl: clamp(1.75rem, 1.45rem + 1.35vw, 2.75rem);
+  --t-2xl: clamp(2.25rem, 1.7rem + 2.5vw, 4rem);
+  --t-hero: clamp(2.9rem, 1.6rem + 6.2vw, 7.25rem);
+
+  /* Space scale */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-section: clamp(5rem, 3.5rem + 7vw, 10rem);
+
+  /* Layout */
+  --w-page: 1240px;
+  --w-prose: 62ch;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --nav-h: 64px;
+
+  /* Shape — radius is used sparingly and by role, not everywhere */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -16px rgb(0 0 0 / 0.7);
+  --shadow-2: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 30px 60px -30px rgb(0 0 0 / 0.9);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --d-fast: 160ms;
+  --d-base: 280ms;
+  --d-slow: 700ms;
+}

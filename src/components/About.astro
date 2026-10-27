@@ -1,0 +1,234 @@
+---
+import { education, languages, profile, coursework } from "../data/site";
+
+const principles = [
+  {
+    title: "Detail is the product",
+    body: "The difference between usable and polished lives in spacing, states, and edge cases — so that is where I spend the time.",
+  },
+  {
+    title: "Users before ornament",
+    body: "Every interface starts from what someone is trying to get done. Visual flair only earns its place if it helps.",
+  },
+  {
+    title: "Push past the default",
+    body: "I like testing boundaries and trying the more creative solution, then keeping whatever makes the result genuinely better.",
+  },
+];
+---
+
+<section class="section about" id="about" aria-labelledby="about-title">
+  <div class="container about__grid">
+    <header class="about__aside">
+      <p class="eyebrow"><b>01</b> About</p>
+    </header>
+
+    <div class="about__main">
+      <h2 class="about__title" id="about-title" data-reveal>
+        Getting to know Sohaib&nbsp;— a developer who cares how software <span>feels</span>.
+      </h2>
+
+      <div class="about__body" data-reveal>
+        <p class="about__lead">
+          I'm deeply passionate about using code to craft solutions to complex problems. My focus is the front end: taking
+          something intricate and turning it into an application people find clear, fast, and pleasant to use.
+        </p>
+        <p>
+          I'm studying computer science at {education.school}, which grounds my web work in algorithms, object-oriented
+          design, and data structures. Most of what I build today is in React and modern JavaScript, with a growing
+          interest in the back end through Node.js and Python.
+        </p>
+      </div>
+
+      <ol class="principles" role="list">
+        {principles.map((p, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}>
+            <span class="principles__n mono">0{i + 1}</span>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <dl class="ledger" data-reveal>
+        <div>
+          <dt>Based in</dt>
+          <dd>{profile.location}</dd>
+        </div>
+        <div>
+          <dt>Education</dt>
+          <dd>
+            {education.degree}
+            <span>{education.school}, {education.campus} · since {education.since}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Coursework</dt>
+          <dd>
+            {coursework.map((c) => c.title).join(", ")}
+            <span>Built in C++ for {coursework.map((c) => c.course).join(", ")}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Languages</dt>
+          <dd>
+            {languages.join(" & ")}
+            <span>Full professional proficiency</span>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    border-top: 1px solid var(--c-border);
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--s-5);
+  }
+
+  .about__aside .eyebrow {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--s-5));
+  }
+
+  .about__title {
+    font-size: var(--t-2xl);
+    max-width: 20ch;
+    margin-bottom: var(--s-7);
+  }
+
+  .about__title span {
+    background: var(--g-signal);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .about__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    color: var(--c-text-2);
+    margin-bottom: var(--s-8);
+  }
+
+  .about__lead {
+    color: var(--c-text);
+    font-size: var(--t-md);
+    line-height: 1.55;
+  }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--c-border);
+    margin-bottom: var(--s-8);
+  }
+
+  .principles li {
+    padding: var(--s-5) var(--s-5) var(--s-5) 0;
+  }
+
+  .principles li + li {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--c-border);
+  }
+
+  .principles__n {
+    display: block;
+    color: var(--c-rose);
+    margin-bottom: var(--s-6);
+  }
+
+  .principles h3 {
+    font-size: var(--t-md);
+    margin-bottom: var(--s-3);
+  }
+
+  .principles p {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+  }
+
+  .ledger {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--s-6);
+  }
+
+  .ledger div {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: var(--s-4);
+    padding-block: var(--s-4);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .ledger dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-text-3);
+    padding-top: 0.2em;
+  }
+
+  .ledger dd {
+    font-weight: 500;
+  }
+
+  .ledger dd span {
+    display: block;
+    font-weight: 400;
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+  }
+
+  @media (max-width: 1099px) {
+    .ledger {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 859px) {
+    .about__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .about__aside .eyebrow {
+      position: static;
+    }
+
+    .about__body,
+    .principles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .principles li,
+    .principles li + li {
+      padding: var(--s-5) 0;
+      border-left: 0;
+    }
+
+    .principles li + li {
+      border-top: 1px solid var(--c-border);
+    }
+
+    .principles__n {
+      margin-bottom: var(--s-3);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ledger div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-1);
+    }
+  }
+</style>

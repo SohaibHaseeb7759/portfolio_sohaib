@@ -1,0 +1,36 @@
+---
+// Small inline icon set — stroke icons drawn on a 24px grid.
+interface Props {
+  name: "arrow-r" | "arrow-d" | "arrow-ur" | "arrow-u" | "copy" | "check" | "mail" | "phone" | "menu" | "close" | "github";
+  class?: string;
+}
+const { name, class: className = "" } = Astro.props;
+const paths: Record<Props["name"], string> = {
+  "arrow-r": "M5 12h14M13 6l6 6-6 6",
+  "arrow-d": "M12 5v14M6 13l6 6 6-6",
+  "arrow-ur": "M7 17 17 7M8 7h9v9",
+  "arrow-u": "M12 19V5M6 11l6-6 6 6",
+  copy: "M9 9h10v10H9zM5 15V5h10",
+  check: "M5 12.5l4.5 4.5L19 7.5",
+  mail: "M3 6h18v12H3zM3 7l9 6 9-6",
+  phone: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1",
+  menu: "M4 8h16M4 16h16",
+  close: "M6 6l12 12M18 6 6 18",
+  github:
+    "M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21",
+};
+---
+
+<svg
+  class:list={[name, className]}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={paths[name]}></path>
+</svg>

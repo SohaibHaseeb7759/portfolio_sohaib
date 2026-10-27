@@ -1,0 +1,399 @@
+---
+import ProjectFrame from "./ProjectFrame.astro";
+import ProjectLinks from "./ProjectLinks.astro";
+import { projects, coursework } from "../data/site";
+
+const featured = projects.filter((p) => p.featured);
+const rest = projects.filter((p) => !p.featured);
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<section class="section work" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow"><b>03</b> Selected work</p>
+      <h2 id="work-title" data-reveal>Projects, from API-driven apps to hand-built sites.</h2>
+      <p data-reveal>
+        Each one is a working application. The React projects are open source; the JavaScript sites are live on
+        Netlify.
+      </p>
+    </header>
+
+    <!-- Featured case studies -->
+    <div class="featured">
+      {featured.map((p, i) => (
+        <article class:list={["project feature", { "feature--flip": i % 2 === 1 }]} aria-labelledby={`p-${p.slug}`}>
+          <div class="feature__media" data-reveal>
+            <ProjectFrame project={p} sizes="(min-width: 1100px) 700px, (min-width: 860px) 58vw, 100vw" />
+          </div>
+
+          <div class="feature__body" data-reveal style="--reveal-i:1">
+            <p class="project__meta mono">
+              <span class="project__n">{pad(i + 1)}</span>
+              <span>{p.kind}</span>
+            </p>
+            <h3 class="feature__title" id={`p-${p.slug}`}>{p.title}</h3>
+            <p class="feature__summary">{p.summary}</p>
+
+            <dl class="feature__detail">
+              <div>
+                <dt class="mono">Problem</dt>
+                <dd>{p.problem}</dd>
+              </div>
+              <div>
+                <dt class="mono">What I built</dt>
+                <dd>
+                  <ul role="list" class="built">
+                    {p.built.map((b) => <li>{b}</li>)}
+                  </ul>
+                </dd>
+              </div>
+            </dl>
+
+            <ul class="tags" role="list" aria-label="Technologies">
+              {p.stack.map((s) => <li>{s}</li>)}
+            </ul>
+
+            <ProjectLinks project={p} />
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Secondary projects in an asymmetric grid -->
+    <div class="more">
+      {rest.map((p, i) => (
+        <article
+          class:list={["project tile", `tile--${p.slug}`]}
+          aria-labelledby={`p-${p.slug}`}
+          data-reveal
+          style={`--reveal-i:${i % 2}`}
+        >
+          <div class="tile__media">
+            <ProjectFrame
+              project={p}
+              ratio={p.slug === "far-away" ? "1459 / 517" : "16 / 10"}
+              sizes={p.slug === "far-away" ? "(min-width: 860px) 60vw, 100vw" : "(min-width: 860px) 45vw, 100vw"}
+            />
+          </div>
+          <div class="tile__body">
+            <p class="project__meta mono">
+              <span class="project__n">{pad(featured.length + i + 1)}</span>
+              <span>{p.kind}</span>
+            </p>
+            <h3 class="tile__title" id={`p-${p.slug}`}>{p.title}</h3>
+            <p class="tile__summary">{p.summary}</p>
+            <p class="tile__built">
+              <span class="mono">Built</span> {p.built.join(" · ")}
+            </p>
+            <ul class="tags" role="list" aria-label="Technologies">
+              {p.stack.map((s) => <li>{s}</li>)}
+            </ul>
+            <ProjectLinks project={p} />
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Coursework -->
+    <div class="coursework" data-reveal>
+      <h3 class="coursework__title mono">Also built — university coursework</h3>
+      <ul role="list">
+        {coursework.map((c) => (
+          <li>
+            <span class="coursework__name">{c.title}</span>
+            <span class="coursework__course">{c.course}</span>
+            <span class="coursework__lang mono">{c.lang}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .work {
+    border-top: 1px solid var(--c-border);
+  }
+
+  /* ---------- Featured ---------- */
+  .featured {
+    display: grid;
+    gap: clamp(var(--s-8), 9vw, 9rem);
+    margin-bottom: clamp(var(--s-8), 9vw, 9rem);
+  }
+
+  .feature {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-5);
+    align-items: center;
+  }
+
+  .feature__media {
+    grid-column: 1 / span 7;
+    position: relative;
+  }
+
+  /* Soft colored light behind the screenshot */
+  .feature__media::before {
+    content: "";
+    position: absolute;
+    inset: 12% 8% -6%;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgb(0 127 255 / 0.22), transparent);
+    filter: blur(30px);
+  }
+
+  .feature--flip .feature__media::before {
+    background: radial-gradient(closest-side, rgb(255 60 172 / 0.16), transparent);
+  }
+
+  .feature__body {
+    grid-column: 9 / -1;
+  }
+
+  .feature--flip .feature__media {
+    grid-column: 6 / -1;
+    order: 2;
+  }
+
+  .feature--flip .feature__body {
+    grid-column: 1 / span 4;
+  }
+
+  .project__meta {
+    display: flex;
+    gap: var(--s-3);
+    color: var(--c-text-3);
+    margin-bottom: var(--s-3);
+  }
+
+  .project__n {
+    color: var(--c-rose);
+  }
+
+  .feature__title {
+    font-size: var(--t-2xl);
+    letter-spacing: -0.04em;
+    margin-bottom: var(--s-4);
+  }
+
+  .feature__summary {
+    font-size: var(--t-md);
+    line-height: 1.5;
+    color: var(--c-text);
+    margin-bottom: var(--s-5);
+  }
+
+  .feature__detail {
+    display: grid;
+    gap: var(--s-4);
+    margin-bottom: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .feature__detail dt {
+    color: var(--c-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--s-1);
+  }
+
+  .feature__detail dd {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+  }
+
+  .built {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .built li {
+    position: relative;
+    padding-left: 1.1em;
+  }
+
+  .built li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.5em;
+    height: 1px;
+    background: var(--c-text-3);
+  }
+
+  .feature .tags {
+    margin-bottom: var(--s-5);
+  }
+
+  /* ---------- Secondary grid ---------- */
+  .more {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--s-8) var(--s-5);
+    padding-top: var(--s-8);
+    border-top: 1px solid var(--c-border);
+    margin-bottom: var(--s-9);
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+  }
+
+  .tile--forkify {
+    grid-column: 1 / span 7;
+  }
+
+  .tile--omnifood {
+    grid-column: 8 / -1;
+    margin-top: var(--s-9);
+  }
+
+  .tile--far-away {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--s-5);
+    align-items: center;
+  }
+
+  .tile--far-away .tile__media {
+    grid-column: 1 / span 8;
+  }
+
+  .tile--far-away .tile__body {
+    grid-column: 9 / -1;
+  }
+
+  .tile__title {
+    font-size: var(--t-xl);
+    letter-spacing: -0.035em;
+    margin-bottom: var(--s-3);
+  }
+
+  .tile__summary {
+    color: var(--c-text-2);
+    margin-bottom: var(--s-3);
+    max-width: 52ch;
+  }
+
+  .tile__built {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+    margin-bottom: var(--s-4);
+    max-width: 60ch;
+  }
+
+  .tile__built .mono {
+    color: var(--c-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: var(--s-2);
+  }
+
+  .tile .tags {
+    margin-bottom: var(--s-5);
+  }
+
+  /* ---------- Coursework ---------- */
+  .coursework {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--s-5);
+  }
+
+  .coursework__title {
+    color: var(--c-text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  .coursework li {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) auto;
+    gap: var(--s-4);
+    align-items: baseline;
+    padding-block: var(--s-4);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .coursework li:last-child {
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .coursework__name {
+    font-family: var(--f-display);
+    font-size: var(--t-md);
+    font-weight: 500;
+  }
+
+  .coursework__course {
+    color: var(--c-text-2);
+    font-size: var(--t-sm);
+  }
+
+  .coursework__lang {
+    color: var(--c-text-3);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1099px) {
+    .feature__media,
+    .feature--flip .feature__media {
+      grid-column: 1 / span 7;
+      order: 0;
+    }
+
+    .feature__body,
+    .feature--flip .feature__body {
+      grid-column: 8 / -1;
+    }
+
+    .tile--far-away .tile__media {
+      grid-column: 1 / span 7;
+    }
+
+    .tile--far-away .tile__body {
+      grid-column: 8 / -1;
+    }
+  }
+
+  @media (max-width: 859px) {
+    .feature__media,
+    .feature--flip .feature__media,
+    .feature__body,
+    .feature--flip .feature__body,
+    .tile--forkify,
+    .tile--omnifood,
+    .tile--far-away .tile__media,
+    .tile--far-away .tile__body {
+      grid-column: 1 / -1;
+    }
+
+    .tile--omnifood {
+      margin-top: 0;
+    }
+
+    .coursework {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .coursework li {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--s-1) var(--s-4);
+    }
+
+    .coursework__course {
+      grid-row: 2;
+    }
+  }
+</style>

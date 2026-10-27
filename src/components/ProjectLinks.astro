@@ -1,0 +1,38 @@
+---
+import Icon from "./Icon.astro";
+import type { Project } from "../data/site";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<div class="project-links">
+  {project.live && (
+    <a class="btn btn--primary btn--sm" href={project.live} target="_blank" rel="noopener noreferrer">
+      Visit live site <span class="visually-hidden">for {project.title} (opens in a new tab)</span>
+      <Icon name="arrow-ur" />
+    </a>
+  )}
+  {project.repo && (
+    <a
+      class:list={["btn btn--sm", { "btn--primary": !project.live }]}
+      href={project.repo}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Icon name="github" /> View source <span class="visually-hidden">of {project.title} on GitHub (opens in a new tab)</span>
+      <Icon name="arrow-ur" />
+    </a>
+  )}
+</div>
+
+<style>
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+</style>
