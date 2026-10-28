@@ -135,7 +135,24 @@ export const experience: Role[] = [
     points: [
       "Developed modular, reusable Angular components with responsive design and cross-browser compatibility.",
       "Implemented REST API integrations with centralised error handling, and worked with QA to resolve defects and improve release stability.",
+      "Developed the Emprofy marketing website in WordPress with Elementor.",
     ],
+    delivered: {
+      label: "Emprofy · career passport & reference checking",
+      items: [
+        {
+          name: "Emprofy website",
+          note: "Marketing site · WordPress + Elementor, developed by me",
+          href: "https://emprofy.com/",
+        },
+        {
+          name: "Emprofy app",
+          note: "Web app · Angular, built as part of the team",
+          href: "https://app.emprofy.com/",
+        },
+      ],
+      note: "I developed the Emprofy website in WordPress and Elementor, and was part of the team that built the Angular web app at Purevi Tech Solutions. Emprofy, its content and brand belong to their owners and are linked here as my work.",
+    },
   },
 ];
 
@@ -181,7 +198,7 @@ export const stack = [
   },
   {
     group: "Tools & cloud",
-    items: ["Git & GitHub", "Vercel", "AWS", "Azure", "WordPress", "Playwright", "Postman", "Figma", "Agile / Scrum"],
+    items: ["Git & GitHub", "Vercel", "AWS", "Azure", "WordPress", "Elementor", "Playwright", "Postman", "Figma", "Agile / Scrum"],
   },
 ];
 
