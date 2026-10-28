@@ -17,7 +17,8 @@ const current = experience.filter((r) => r.current);
     <div class="hero__copy">
       <p class="eyebrow hero__eyebrow anim" style="--i:0">
         <span class="hero__dot" aria-hidden="true"></span>
-        {profile.role} <span aria-hidden="true">·</span> {profile.location}
+        {profile.role} <span aria-hidden="true">·</span> <span class="hero__specialty">{profile.specialty}</span>
+        <span aria-hidden="true">·</span> {profile.location}
       </p>
 
       <h1 class="hero__title" id="hero-title">
@@ -26,8 +27,7 @@ const current = experience.filter((r) => r.current);
       </h1>
 
       <p class="hero__lede anim" style="--i:3">
-        I build <span class="hl">production web applications</span> across the stack, from database and CMS design to
-        fast, responsive UI.
+        {profile.lede.before} <span class="hl">{profile.lede.highlight}</span> {profile.lede.after}
       </p>
 
       <div class="hero__actions anim" style="--i:4">
@@ -141,6 +141,11 @@ const current = experience.filter((r) => r.current);
 
   .hero__eyebrow {
     margin-bottom: var(--s-5);
+  }
+
+  /* The AI specialty reads as part of the label, lifted in rose */
+  .hero__specialty {
+    color: var(--c-rose);
   }
 
   .hero__dot {

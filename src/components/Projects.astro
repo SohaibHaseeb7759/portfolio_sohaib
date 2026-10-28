@@ -10,6 +10,8 @@ const numbered = projects.map((p, i) => ({ p, n: pad(i + 1) }));
 const features = numbered.filter(({ p }) => p.layout === "feature");
 // Every other project is a card with an architecture diagram, in data order.
 const cards = numbered.filter(({ p }) => p.layout === "text");
+// A 3-column grid would leave one card alone on its row; use 2 columns instead.
+const cols = cards.length % 3 === 1 ? 2 : 3;
 ---
 
 <section class="section work" id="work" aria-labelledby="work-title">
@@ -61,7 +63,7 @@ const cards = numbered.filter(({ p }) => p.layout === "text");
       </article>
     ))}
 
-    <div class="cards">
+    <div class="cards" style={`--cols:${cols}`}>
       {cards.map(({ p, n }, i) => (
         <article
           class:list={["project card", { "is-linked": p.live || p.repo }]}
@@ -92,7 +94,7 @@ const cards = numbered.filter(({ p }) => p.layout === "text");
             <ul class="tags card__tags" role="list" aria-label="Technologies">
               {p.stack.map((s) => <li>{s}</li>)}
             </ul>
-            {(p.live || p.repo) && <ProjectLinks project={p} stretch />}
+            {(p.live || p.repo || p.sourcePrivate) && <ProjectLinks project={p} stretch />}
           </div>
         </article>
       ))}
@@ -212,7 +214,7 @@ const cards = numbered.filter(({ p }) => p.layout === "text");
   /* ---------- Card grid ---------- */
   .cards {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
     gap: var(--s-5);
   }
 

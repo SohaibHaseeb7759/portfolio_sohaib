@@ -12,6 +12,8 @@ export const profile = {
   name: "Muhammad Sohaib Haseeb",
   shortName: "Sohaib",
   role: "Full Stack Engineer",
+  /** Second line of positioning, shown beside the role in the hero. */
+  specialty: "Applied AI",
   location: "Lahore, Pakistan",
   coords: "31.55°N 74.34°E",
   email: "sohaibhaseeb01@gmail.com",
@@ -20,7 +22,13 @@ export const profile = {
   cv: "Muhammad_Sohaib_Haseeb_CV.pdf",
   github: "https://github.com/SohaibHaseeb7759",
   linkedin: "https://www.linkedin.com/in/sohaib-haseeb-9a9276282",
-  focus: ["React", "Next.js", "Node.js", "TypeScript", "PostgreSQL"],
+  focus: ["React", "Next.js", "TypeScript", "Node.js", "Python", "PyTorch"],
+  /** One-sentence pitch for the hero; `highlight` is the marked phrase inside it. */
+  lede: {
+    before: "I build",
+    highlight: "production web applications",
+    after: "across the stack, plus applied AI: computer vision and speech models.",
+  },
   /** Shown under the current roles in the hero. Leave empty to hide the line. */
   availability: "Open to full-time and contract roles · remote or Lahore",
 };
@@ -95,13 +103,12 @@ export const experience: Role[] = [
     title: "Frontend Developer",
     stack: "Next.js & TypeScript",
     start: "Jan 2026",
-    end: "Present",
-    current: true,
+    end: "May 2026",
     where: "Remote",
     points: [
-      "Build and ship responsive, type-safe UI components for a SaaS platform in Next.js and TypeScript.",
-      "Integrate REST APIs and manage asynchronous data flows, including loading and error states, for dynamic content.",
-      "Profile and optimise front-end performance, and agree API contracts with backend engineers to deliver features that scale.",
+      "Built and shipped responsive, type-safe UI components for a SaaS platform in Next.js and TypeScript.",
+      "Integrated REST APIs and managed asynchronous data flows, including loading and error states, for dynamic content.",
+      "Profiled and optimised front-end performance, and agreed API contracts with backend engineers to deliver features that scale.",
     ],
   },
   {
@@ -134,6 +141,11 @@ export const capabilities = [
     summary:
       "Client sites shipped end to end as the sole developer, on Payload CMS and WordPress so content stays editable without code. Each one is integrated, deployed, and resilient when services go down.",
   },
+  {
+    title: "Applied AI",
+    summary:
+      "Computer vision and speech models in Python: training YOLO11 segmentation on hand-annotated data, OCR with PaddleOCR, and fine-tuning Whisper with Hugging Face Transformers, measured with mAP and word error rate.",
+  },
 ];
 
 export const stack = [
@@ -148,6 +160,10 @@ export const stack = [
   {
     group: "Backend & data",
     items: ["Node.js", "Express.js", "Django REST", "Payload CMS", "Supabase", "PostgreSQL", "MySQL", "MongoDB"],
+  },
+  {
+    group: "AI & ML",
+    items: ["PyTorch", "Hugging Face Transformers", "YOLO11", "OpenAI Whisper", "PaddleOCR", "OpenCV", "Gradio", "Coqui XTTS"],
   },
   {
     group: "Tools & cloud",
@@ -209,6 +225,40 @@ export const projects: Project[] = [
     device: "phone",
   },
   {
+    slug: "train-detector",
+    title: "Train Detector",
+    kind: "Computer vision · detection, segmentation & OCR",
+    layout: "text",
+    date: "Sep 2026",
+    summary:
+      "A Gradio app that finds and outlines trains in photos with a custom-trained YOLO11 segmentation model, then reads locomotive IDs with PaddleOCR.",
+    built: [
+      "Trained YOLO11n-seg on hand-annotated CVAT polygons: 0.83 box and 0.79 mask mAP50 on its validation set",
+      "Human-in-the-loop learning: each confirmed or rejected detection joins the dataset, and the model retrains from the app",
+      "Video OCR to JSON: scans frames and exports every piece of text with frame numbers, timestamps and confidence",
+    ],
+    stack: ["Python", "YOLO11", "PaddleOCR", "Gradio", "OpenCV"],
+    flow: ["Image / video", "YOLO11-seg", "PaddleOCR", "Gradio"],
+    repo: "https://github.com/SohaibHaseeb7759/Train-Detector-Model",
+  },
+  {
+    slug: "voice-recognition",
+    title: "Voice Recognition",
+    kind: "Speech AI · Whisper speech-to-text",
+    layout: "text",
+    date: "Oct 2026",
+    summary:
+      "A desktop speech-to-text app on OpenAI Whisper, with the full pipeline to fine-tune the model on your own voice and measure the improvement.",
+    built: [
+      "A Tkinter app with live mic metering, a model picker, language detection and timestamped segments",
+      "A dataset recorder with quality checks and fixed-seed splits, feeding Whisper fine-tuning with Transformers",
+      "Word error rate evaluation for before and after, plus zero-shot voice cloning with XTTS-v2",
+    ],
+    stack: ["Python", "Whisper", "Transformers", "PyTorch", "Coqui XTTS"],
+    flow: ["Microphone", "Whisper", "Fine-tune + WER", "Text"],
+    sourcePrivate: true,
+  },
+  {
     slug: "bidmuse",
     title: "BidMuse",
     kind: "Online bidding platform · Final year project",
@@ -233,59 +283,6 @@ export const projects: Project[] = [
     built: ["WebSocket-based real-time messaging", "User authentication", "A responsive chat interface"],
     stack: ["React.js", "Node.js", "Express.js", "MongoDB", "WebSockets"],
     flow: ["React", "WebSockets", "Node + Express", "MongoDB"],
-  },
-  {
-    slug: "usepopcorn",
-    title: "usePopcorn",
-    kind: "Movie search & rating app",
-    layout: "text",
-    summary:
-      "Search any film, open its details, rate it with a custom star component, and keep a personal watched list.",
-    built: [
-      "Live search against the OMDb API with loading and error states",
-      "A reusable, configurable StarRating component",
-      "A custom useLocalStorage hook so the watched list survives reloads",
-    ],
-    stack: ["React", "Hooks", "OMDb API", "localStorage"],
-    flow: ["React + Hooks", "OMDb API", "localStorage"],
-    repo: "https://github.com/SohaibHaseeb7759/usePopcorn-Sohaib",
-  },
-  {
-    slug: "forkify",
-    title: "Forkify",
-    kind: "Recipe discovery app",
-    layout: "text",
-    summary: "Browse and search a large recipe catalogue, open full recipes, and save favourites for later.",
-    built: ["Recipe search and result browsing", "Detailed recipe views", "Saving favourite recipes"],
-    stack: ["JavaScript", "HTML", "CSS", "Forkify API"],
-    flow: ["HTML + CSS", "JavaScript", "Forkify API"],
-    live: "https://forkify-sohaib.netlify.app/",
-  },
-  {
-    slug: "omnifood",
-    title: "Omnifood",
-    kind: "Responsive marketing site",
-    layout: "text",
-    summary: "A responsive restaurant and meal-subscription website that presents the menu and services.",
-    built: ["Fully responsive layout", "Modern UI/UX patterns for engagement", "Hand-written HTML, CSS, and JavaScript"],
-    stack: ["HTML", "CSS", "JavaScript"],
-    flow: ["Semantic HTML", "Responsive CSS", "JavaScript"],
-    live: "https://omnifood-sohaib.netlify.app/",
-  },
-  {
-    slug: "far-away",
-    title: "Far Away",
-    kind: "Travel packing list",
-    layout: "text",
-    summary: "A packing checklist for trips: add items with quantities, tick them off, sort, and clear the list.",
-    built: [
-      "Add, delete, and toggle packed items",
-      "Sort by input order, description, or packed status",
-      "Live stats on how much is packed",
-    ],
-    stack: ["React", "State lifting", "CSS"],
-    flow: ["Form", "App state", "List + Stats"],
-    repo: "https://github.com/SohaibHaseeb7759/Trevel-List-Sohaib",
   },
 ];
 
@@ -314,7 +311,7 @@ export const about = {
   title: "Across the stack, down to the",
   highlight: "details",
   lead: "I'm a full stack engineer who builds production web applications with React, Next.js, Angular, Node.js, and TypeScript, from SaaS products to marketing sites I've delivered end to end as the sole developer.",
-  body: `I'm comfortable owning a feature across the stack: designing the database or CMS, writing the API between them, and shipping a responsive, high-performance interface on top. I studied computer science at ${education.school}, which still shapes how I reason about data, structure, and edge cases.`,
+  body: `I'm comfortable owning a feature across the stack: designing the database or CMS, writing the API between them, and shipping a responsive, high-performance interface on top. I studied computer science at ${education.school}, and I've been putting that to work in AI: training a YOLO segmentation model for train detection and building a Whisper speech pipeline I can fine-tune on my own voice.`,
   facts: [
     { label: "Based in", value: profile.location, note: "Working onsite and remote" },
     {
@@ -338,19 +335,19 @@ export const sections = {
     n: "02",
     label: "Experience",
     title: "Where I've been building.",
-    intro: "Three roles across client sites and SaaS products. Two are ongoing: one onsite and one remote.",
+    intro: "Three roles across client sites and SaaS products, most recently onsite at Transcure in Lahore.",
   },
   work: {
     n: "03",
     label: "Selected work",
-    title: "Projects, from a production PWA to hand-built sites.",
+    title: "Projects, from a production PWA to trained AI models.",
     intro: "Each one is a working application: live where it's deployed, and open source wherever the code is public.",
   },
   skills: {
     n: "04",
     label: "Skills",
     title: "What I bring to a product team.",
-    intro: "Three areas I own end to end, from the database and CMS to the interface people actually use.",
+    intro: "Four areas I own end to end, from the database and CMS to the interface people use and the models behind it.",
     toolkit: "Toolkit",
   },
   contact: {
