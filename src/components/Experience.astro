@@ -1,5 +1,6 @@
 ---
 import { Picture } from "astro:assets";
+import Icon from "./Icon.astro";
 import { experience, sections } from "../data/site";
 
 const copy = sections.experience;
@@ -69,11 +70,23 @@ const copy = sections.experience;
                             {c.href && <span class="visually-hidden"> (opens in a new tab)</span>}
                           </p>
                           {c.note && <p class="client__note">{c.note}</p>}
+                          {c.href && (
+                            <p class="client__url mono">
+                              <span class="client__host">
+                                {c.href.replace(/^https?:\/\//, "").replace(/\/$/, "").replace(c.staging ? /^stage\./ : /^$/, "")}
+                              </span>
+                              <Icon name="arrow-ur" />
+                              {c.staging && <span class="client__tag">Staging</span>}
+                            </p>
+                          )}
                         </Tag>
                       </li>
                     );
                   })}
                 </ul>
+                {r.delivered.note && r.delivered.items.some((c) => c.href) && (
+                  <p class="delivered__note">{r.delivered.note}</p>
+                )}
               </div>
             )}
           </div>
@@ -301,8 +314,66 @@ const copy = sections.experience;
     color: var(--c-text-3);
   }
 
+  .client__url {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-2);
+    margin-top: auto;
+    padding-top: var(--s-2);
+    font-size: 0.68rem;
+    color: var(--c-text-3);
+    transition: color var(--d-fast);
+  }
+
+  /* Hostnames never break mid-word; an ellipsis is the last resort */
+  .client__host {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .client__url :global(svg) {
+    width: 0.9em;
+    height: 0.9em;
+    flex: none;
+    transition: transform var(--d-base) var(--ease-out);
+  }
+
+  .client__tag {
+    padding: 1px 6px;
+    border: 1px solid var(--c-border-strong);
+    border-radius: var(--r-xs);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+  }
+
   .client--link:hover .client__media {
-    border-color: var(--c-blue-line);
+    border-color: var(--c-rose-line);
+  }
+
+  .client--link:hover .client__url {
+    color: var(--c-rose);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .client--link:hover .client__url :global(svg) {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  .delivered__note {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border);
+    font-size: var(--t-xs);
+    line-height: 1.6;
+    color: var(--c-text-3);
+    max-width: 70ch;
   }
 
   @media (max-width: 1099px) {
@@ -359,6 +430,10 @@ const copy = sections.experience;
     .clients {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--s-4) var(--s-3);
+    }
+
+    .client__url {
+      font-size: 0.62rem;
     }
   }
 </style>

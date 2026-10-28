@@ -56,6 +56,8 @@ export type Client = {
   name: string;
   note?: string;
   href?: string;
+  /** The link points at a staging deployment, not the client's production domain. */
+  staging?: boolean;
   image?: ImageMetadata;
   logo?: ImageMetadata;
 };
@@ -70,7 +72,8 @@ export type Role = {
   where: string;
   points: string[];
   /** Named client deliverables, shown as a list under the role. */
-  delivered?: { label: string; items: Client[] };
+  /** `note` is shown under the cards, e.g. an ownership credit. */
+  delivered?: { label: string; items: Client[]; note?: string };
 };
 
 export const experience: Role[] = [
@@ -90,12 +93,23 @@ export const experience: Role[] = [
     delivered: {
       label: "Delivered end to end as sole developer",
       items: [
-        { name: "Altitude Arena", note: "UAE entertainment venue · Astro + Payload CMS" },
-        { name: "Altitude Trampoline Park", note: "UAE trampoline park · Astro + Payload CMS" },
-        { name: "Macralytics", note: "Content managed through WordPress" },
-        { name: "RocketMSL", note: "Responsive, reusable UI components" },
-        { name: "VizCraft", note: "Responsive, reusable UI components" },
+        {
+          name: "Altitude Arena",
+          note: "UAE entertainment venue · Astro + Payload CMS",
+          href: "https://stage.altitudearena.ae/",
+          staging: true,
+        },
+        {
+          name: "Altitude Trampoline Park",
+          note: "UAE trampoline park · Astro + Payload CMS",
+          href: "https://stage.altitudetrampoline.ae/",
+          staging: true,
+        },
+        { name: "Macralytics", note: "Content managed through WordPress", href: "https://macralytics.com/" },
+        { name: "RocketMSL", note: "Responsive, reusable UI components", href: "https://rocketmsl.com/" },
+        { name: "VizCraft", note: "React + Vite rebuild of the original site", href: "https://vizcraft.biz/" },
       ],
+      note: "I built each of these sites end to end as the sole developer at Transcure. The sites, their content and brands belong to their respective owners and are linked here as my work.",
     },
   },
   {
